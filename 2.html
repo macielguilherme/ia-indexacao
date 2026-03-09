@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOS Docs - Validação de Metadados IA</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #fff;
+            padding-top: 45px;
+        }
+        .topNav {
+            background: #2c363f;
+            background-image: linear-gradient(to bottom, #3c4852, #212a31);
+            display: block;
+            color: #eeeeee;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 999;
+            height: 34px;
+            border-bottom: 1px solid #1c262b;
+        }
+        .wrapper { position: relative; margin: 0 3%; }
+        .userNav { float: right; font-size: 11px; }
+        .userNav ul { margin: 0; padding: 0; list-style: none; display: flex; border-right: 1px solid #39454f; }
+        .userNav ul li { border-left: 1px solid #39454f; border-right: 1px solid #1c262b; display: flex; align-items: center; height: 34px; }
+        .userNav ul li span, .userNav ul li a { padding: 0 15px; color: #eee; text-decoration: none; display: flex; align-items: center; height: 100%; }
+        
+        .card { border: 1px solid rgba(0, 0, 0, .125); border-radius: .25rem; margin-bottom: 1.5rem; }
+        .card-header { padding: .75rem 1.25rem; background-color: rgba(0, 0, 0, .03); border-bottom: 1px solid rgba(0, 0, 0, .125); }
+        
+        .equal-height { height: 500px; display: flex; flex-direction: column; }
+        .div-scroll { overflow-y: auto; flex-grow: 1; padding: 1.25rem; }
+        .embed-responsive { position: relative; display: block; width: 100%; height: 100%; background-color: #f8f9fa; border: 1px solid #ddd; }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            font-weight: 700;
+            padding: 10px 60px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .btn-success:hover { background-color: #218838; border-color: #1e7e34; }
+
+        .table thead th { background-color: #f8f9fa; font-size: 12px; }
+        .btn-remove { color: #dc3545; cursor: pointer; background: none; border: none; padding: 0; }
+        .text-right { text-align: right !important; }
+    </style>
+</head>
+<body>
+
+<div class="topNav">
+    <div class="wrapper">
+        <div class="userNav">
+            <ul>
+                <li><span><strong>Demo</strong></span></li>
+                <li><span><strong>99999 | Demonstração</strong></span></li>
+                <li><a href="#"><i class="fas fa-user"></i><span class="ml-1">GUILHERME FARIAS MACIEL RIBEIRO</span></a></li>
+                <li><a href="#"><i class="fas fa-reply"></i><span class="ml-1">Voltar</span></a></li>
+                <li><a href="javascript:logout()"><i class="fas fa-share"></i><span class="ml-1">Logout</span></a></li>
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+<div class="container-fluid pt-2">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <button class="btn btn-link" type="button" style="text-decoration:none; color:#007bff; text-align:left; width:100%;">
+                    <label class="mb-0">Fluxo: </label> <span>Validação de Metadados IA</span>
+                    <label class="mb-0 ml-2">| Validador: </label> <span>GUILHERME FARIAS MACIEL RIBEIRO</span>
+                    <i class="fas fa-angle-double-down float-right"></i>
+                </button>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card-group text-center">
+                <div class="card bg-light"><div class="card-body p-2">Fila IA<br><b class="h4">142</b></div></div>
+                <div class="card bg-light"><div class="card-body p-2">Restantes<br><b id="itensRestantes" class="h4">12</b></div></div>
+                <div class="card bg-light"><div class="card-body p-2">Validados hoje<br><b id="countValidados" class="h5">31</b></div></div>
+            </div>
+            <div class="text-center mt-2 small text-primary">
+                Identificador SOS: <span id="doc-id-display" class="font-weight-bold">DC000000000001SOS</span> | Posição: <span id="pos-fila">1</span>/142
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 pb-4">
+            <form id="form-validacao">
+                <div class="card shadow-sm equal-height">
+                    <div class="card-header font-weight-bold">Dados Extraídos pela IA</div>
+                    <div class="card-body div-scroll">
+                        <div class="form-group">
+                            <label class="small font-weight-bold">Identificador SOS</label>
+                            <input type="text" id="input-sos" class="form-control font-weight-bold" value="DC000000000001SOS">
+                        </div>
+                        <div class="form-group">
+                            <label class="small font-weight-bold">Classificação</label>
+                            <select id="input-class" class="form-control">
+                                <option value="003.05.01.009">003.05.01.009 | Processo de cálculo de proventos e descontos</option>
+                                <option value="003.05.01.010">003.05.01.010 | Folha de Pagamento - Mensal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="small font-weight-bold">Descrição</label>
+                            <textarea id="input-desc" rows="5" class="form-control" style="resize: none;">Memória de cálculo de proventos (horas extras, adicional noturno) e descontos legais (INSS, IRRF) referente ao mês 03/2026.</textarea>
+                        </div>
+                        <div class="text-right">
+                            <input type="submit" value="Confirmar Validação" class="btn btn-success">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-6 pb-4">
+            <div class="card shadow-sm equal-height">
+                <div class="card-header font-weight-bold">Visualizador de Documento</div>
+                <div class="card-body p-0">
+                    <div class="embed-responsive">
+                        <iframe id="pdf-frame" src="data:application/pdf;base64,JVBERi0xLjQKJeeh5tTHCjEgMCBvYmoKPDwKL1R5cGUgL0NhdGFsb2cKL1BhZ2VzIDIgMCBSCj4+CmVuZG9iagoyIDAgb2JqCjw8Ci9UeXBlIC9QYWdlcwovS2lkcyBbMyAwIFJdCi9Db3VudCAxCj4+CmVuZG9iagozIDAgb2JqCjw8Ci9UeXBlIC9QYWdlCi9QYXJlbnQgMiAwIFIKL01lZGlhQm94IFswIDAgNTk1IDg0Ml0KL1Jlc291cmNlcyA8PAo+PgovQ29udGVudHMgNCAwIFIKPj4KZW5kb2JqCjQgMCBvYmoKPDwKL0xlbmd0aCAwCj4+CnN0cmVhbQplbmRzdHJlYW0KZW5kb2JqCnRyYWlsZXIKPDwKL1NpemUgNgovUm9vdCAxIDAgUgo+PgpzdGFydHhyZWYKMjI4CiUlRU9G" width="100%" height="100%" style="border: none;"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-sm mb-0 w-100">
+                        <thead>
+                            <tr>
+                                <th class="text-center" width="40"><i class="fas fa-file-alt"></i></th>
+                                <th>Identificador SOS</th>
+                                <th>Descrição</th>
+                                <th>Horário</th>
+                                <th class="text-center" width="60">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-corpo"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let seq = 1;
+    let validados = 31;
+    let restantes = 12;
+
+    document.getElementById('form-validacao').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const sos = document.getElementById('input-sos').value;
+        const desc = document.getElementById('input-desc').value;
+        const agora = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        const linha = document.createElement('tr');
+        linha.innerHTML = `
+            <td class="text-center text-success"><i class="fas fa-check-circle"></i></td>
+            <td class="td-sos font-weight-bold">${sos}</td>
+            <td class="td-desc small">${desc}</td>
+            <td class="small">${agora}</td>
+            <td class="text-center">
+                <button class="btn-remove" onclick="excluir(this)" title="Estornar">
+                    <i class="fas fa-reply text-info"></i>
+                </button>
+            </td>
+        `;
+        document.getElementById('tabela-corpo').prepend(linha);
+
+        seq++; validados++; restantes = Math.max(0, restantes - 1);
+        atualizarInterface(true);
+    });
+
+    function excluir(btn) {
+        const row = btn.closest('tr');
+        document.getElementById('input-sos').value = row.querySelector('.td-sos').innerText;
+        document.getElementById('input-desc').value = row.querySelector('.td-desc').innerText;
+        row.remove();
+        validados--; restantes++; seq--; 
+        atualizarInterface(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function atualizarInterface(isNovo) {
+        if(isNovo) {
+            const novoSos = "DC" + String(seq).padStart(12, '0') + "SOS";
+            document.getElementById('input-sos').value = novoSos;
+            document.getElementById('input-desc').value = "Processo de cálculo de encargos e descontos sindicais - Lote " + seq;
+        }
+        document.getElementById('doc-id-display').innerText = document.getElementById('input-sos').value;
+        document.getElementById('countValidados').innerText = validados;
+        document.getElementById('itensRestantes').innerText = restantes;
+        document.getElementById('pos-fila').innerText = seq;
+    }
+</script>
+</body>
+</html>
