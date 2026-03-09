@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOS Docs - Indexação</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <style>
+        /* Estilos Base fornecidos */
+        body {
+            background-color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            font-size: 1rem;
+            color: #212529;
+        }
+
+        /* TopNav fixa conforme especificação */
+        .topNav {
+            background-image: linear-gradient(to bottom, #3c4852, #212a31);
+            color: #eee;
+            height: 34px;
+            font-size: 11px;
+            position: fixed;
+            top: 0; width: 100%; z-index: 999;
+            border-bottom: 1px solid #1c262b;
+        }
+
+        /* Card e Cabeçalhos */
+        .card {
+            border: 1px solid rgba(0, 0, 0, .125);
+            border-radius: .25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            padding: .75rem 1.25rem;
+            background-color: rgba(0, 0, 0, .03);
+            border-bottom: 1px solid rgba(0, 0, 0, .125);
+        }
+
+        #botao {
+            width: 100%;
+            text-decoration: none;
+            text-align: left;
+            color: #007bff;
+        }
+
+        /* Área de formulário com scroll */
+        .div-scroll {
+            overflow-y: auto;
+            max-height: 600px;
+        }
+
+        .div-campos {
+            display: inline-flex;
+            width: 100%;
+        }
+
+        /* Visualizador de documentos */
+        .embed-responsive {
+            position: relative;
+            display: block;
+            width: 100%;
+            overflow: hidden;
+            height: 500px;
+            background-color: #f8f9fa;
+        }
+
+        /* Botão Salvar */
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            margin-top: 10px;
+        }
+
+        /* Tabela inferior */
+        .table thead th {
+            background-color: #f8f9fa;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body style="padding-top: 45px;">
+
+<div class="topNav d-flex align-items-center justify-content-end px-3">
+    <span class="mr-3"><strong>Demo</strong></span>
+    <span class="mr-3"><strong>99999 | Demonstração</strong></span>
+    <span class="mr-3"><i class="fa fa-user-circle"></i> GUILHERME FARIAS MACIEL RIBEIRO</span>
+    <span class="mr-3"><i class="fa fa-reply"></i> Voltar para Home</span>
+    <span><i class="fa fa-sign-out"></i> Logout</span>
+</div>
+
+<div class="container-fluid pt-2">
+    
+    <div class="card">
+        <div class="card-header" id="headingOne" role="tab">
+            <h5 class="mb-0">
+                <button class="btn btn-link" type="button" id="botao">
+                    <label class="mb-0">Nome: </label> <span id="titulo">POC SEEDUC II </span>
+                    <label class="mb-0 ml-2">| Tipo Indexação: </label> <span id="tipoDocumento">Documento </span>
+                    <label class="mb-0 ml-2">| Pasta trabalho: </label> <span id="pastaIndexacao">DOCUMENTOS -> 36252 </span>
+                    <label class="mb-0 ml-2">| Indexador: </label> <span id="indexador">GUILHERME FARIAS MACIEL RIBEIRO</span>
+                    <i class="fa fa-angle-double-down pull-right"></i>
+                </button>
+            </h5>
+        </div>
+        
+        <div class="card-body">
+            <div class="card-group">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <label class="font-weight-light">Qtd Itens Distribuídos</label><br>
+                        <label id="itensDistribuidos" class="font-weight-bold h4">9193</label>
+                    </div>
+                </div>
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <label class="font-weight-light">Qtd Itens Em Indexação</label><br>
+                        <label id="itensIndexando" class="font-weight-bold h4">9</label>
+                    </div>
+                </div>
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <label class="font-weight-light">Qtd Itens Indexados</label><br>
+                        <label id="itensIndexados" class="font-weight-bold h4">31</label>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-2 small text-primary">
+                Identificador SOS: | Endereço: | Status: | Nº de Itens a indexar: 1 | Nº de Itens indexados: 0
+            </div>
+        </div>
+    </div>
+
+    <div class="row h-100">
+        <div class="col-sm-12 col-md-6 pb-4" id="div-campos-indexacao">
+            <form class="h-100" id="form-indexacao" novalidate="novalidate">
+                <div class="card h-100">
+                    <div class="card-body h-100 div-scroll">
+                        <div class="row" id="div-texto">
+                            <div class="div-campos col-md-12 div-c1">
+                                <div class="form-group w-100">
+                                    <label>Identificador SOS</label>
+                                    <input id="c1" name="c1" type="TEXT" class="form-control" value="">
+                                </div>
+                            </div>
+                            <div class="div-campos col-md-12 div-c20">
+                                <div class="form-group w-100">
+                                    <label>Classificação</label>
+                                    <select id="c20" class="form-control">
+                                        <option value="">Select an Option</option>
+                                        <option value="50008">003.05.01.009 | Processo de cálculo...</option>
+                                        </select>
+                                </div>
+                            </div>
+                            <div class="div-campos col-md-12 div-c6">
+                                <div class="form-group w-100">
+                                    <label>Descrição</label>
+                                    <textarea rows="3" id="c6" name="c6" class="form-control">></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <input type="submit" id="enviar" name="Salvar/Confirmar" value="Salvar/Confirmar" class="btn btn-success px-4">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="div-documentos" class="col-md-6 col-sm-12 pb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="p-0">Documento</div>
+                        </div>
+                        <div class="col text-right">
+                            <select class="custom-select custom-select-sm w-50" id="arquivos">
+                                <option>Selecione um arquivo...</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div id="div-iframe" class="embed-responsive">
+                        <div class="d-flex h-100 align-items-center justify-content-center text-muted">
+                            <i class="fa fa-file-pdf-o fa-3x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="div-objetos-catalogados" class="col-md-12 pb-4">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        Objetos Catalogados [ <span id="countObj">1</span> ]
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-secondary btn-sm">Validação</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="tabela-items-catalogacao" class="table table-striped table-bordered table-sm w-100">
+                        <thead>
+                            <tr>
+                                <th><i class="fa fa-file-text-o"></i></th>
+                                <th><input type="checkbox" id="todos"></th>
+                                <th>Identificador SOS</th>
+                                <th>Validado</th>
+                                <th>Editar</th>
+                                <th>Classificação</th>
+                                <th>Excluir</th>
+                                <th>Descrição</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="8" class="text-center py-4 text-muted">No data available in table</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-12 col-md-5">
+                        <div class="small">Showing 0 to 0 of 0 entries</div>
+                    </div>
+                    <div class="col-sm-12 col-md-7 text-right">
+                        <button class="btn btn-success btn-sm mr-2">Lista de Objetos Distribuídos</button>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-secondary disabled">Previous</button>
+                            <button class="btn btn-outline-secondary disabled">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
