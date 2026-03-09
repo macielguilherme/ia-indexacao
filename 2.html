@@ -10,7 +10,7 @@
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #fff;
+            background-color: #f4f7f9;
             padding-top: 45px;
         }
         .topNav {
@@ -32,12 +32,22 @@
         .userNav ul li { border-left: 1px solid #39454f; border-right: 1px solid #1c262b; display: flex; align-items: center; height: 34px; }
         .userNav ul li span, .userNav ul li a { padding: 0 15px; color: #eee; text-decoration: none; display: flex; align-items: center; height: 100%; }
         
-        .card { border: 1px solid rgba(0, 0, 0, .125); border-radius: .25rem; margin-bottom: 1.5rem; }
+        .card { border: 1px solid rgba(0, 0, 0, .125); border-radius: .25rem; margin-bottom: 1.5rem; background: #fff; }
         .card-header { padding: .75rem 1.25rem; background-color: rgba(0, 0, 0, .03); border-bottom: 1px solid rgba(0, 0, 0, .125); }
         
-        .equal-height { height: 500px; display: flex; flex-direction: column; }
+        .equal-height { height: 550px; display: flex; flex-direction: column; }
         .div-scroll { overflow-y: auto; flex-grow: 1; padding: 1.25rem; }
-        .embed-responsive { position: relative; display: block; width: 100%; height: 100%; background-color: #f8f9fa; border: 1px solid #ddd; }
+        
+        .embed-responsive { 
+            position: relative; 
+            display: block; 
+            width: 100%; 
+            height: 100%; 
+            background-color: #525659; 
+            border: 1px solid #ddd; 
+            overflow: hidden;
+        }
+        #pdf-frame { width: 100%; height: 100%; border: none; }
 
         .btn-success {
             background-color: #28a745;
@@ -45,14 +55,12 @@
             font-weight: 700;
             padding: 10px 60px;
             font-size: 16px;
-            margin-top: 10px;
         }
-        .btn-success:hover { background-color: #218838; border-color: #1e7e34; }
+        .btn-success:hover { background-color: #218838; }
 
-        .table thead th { background-color: #f8f9fa; font-size: 11px; text-transform: uppercase; vertical-align: middle; }
+        .table thead th { background-color: #f8f9fa; font-size: 11px; text-transform: uppercase; }
         .table tbody td { font-size: 12px; vertical-align: middle; }
         .btn-remove { color: #dc3545; cursor: pointer; background: none; border: none; padding: 0; }
-        .text-right { text-align: right !important; }
         .badge-timer { background-color: #e9ecef; color: #495057; padding: 4px 8px; border-radius: 4px; font-family: monospace; }
     </style>
 </head>
@@ -97,12 +105,11 @@
     </div>
 
     <div class="row">
-        <div class="col-md-6 pb-4">
+        <div class="col-md-5 pb-4">
             <form id="form-validacao">
                 <div class="card shadow-sm equal-height">
-                    <div class="card-header font-weight-bold d-flex justify-content-between">
-                        <span>Dados Extraídos pela IA</span>
-                        <span class="small text-muted" id="relogio-inicio">Início: --:--:--</span>
+                    <div class="card-header font-weight-bold">
+                        Dados Extraídos pela IA
                     </div>
                     <div class="card-body div-scroll">
                         <div class="form-group">
@@ -118,9 +125,9 @@
                         </div>
                         <div class="form-group">
                             <label class="small font-weight-bold">Descrição</label>
-                            <textarea id="input-desc" rows="5" class="form-control" style="resize: none;">Memória de cálculo de proventos (horas extras, adicional noturno) e descontos legais (INSS, IRRF) referente ao mês 03/2026.</textarea>
+                            <textarea id="input-desc" rows="6" class="form-control" style="resize: none;">Memória de cálculo de proventos (horas extras, adicional noturno) e descontos legais (INSS, IRRF) referente ao mês 03/2026.</textarea>
                         </div>
-                        <div class="text-right">
+                        <div class="text-center mt-4">
                             <input type="submit" value="Confirmar Validação" class="btn btn-success">
                         </div>
                     </div>
@@ -128,7 +135,7 @@
             </form>
         </div>
 
-        <div class="col-md-6 pb-4">
+        <div class="col-md-7 pb-4">
             <div class="card shadow-sm equal-height">
                 <div class="card-header font-weight-bold">Visualizador de Documento</div>
                 <div class="card-body p-0">
@@ -169,17 +176,13 @@
     let seq = 1;
     let validados = 31;
     let restantes = 12;
-    let horarioInicioAtual = new Date();
-
-    // Inicia o horário de início assim que a página carrega
-    window.onload = function() {
-        setNovoHorarioInicio();
-    };
+    let horarioInicioAtual;
 
     function setNovoHorarioInicio() {
         horarioInicioAtual = new Date();
-        document.getElementById('relogio-inicio').innerText = "Início: " + horarioInicioAtual.toLocaleTimeString();
     }
+
+    setNovoHorarioInicio(); // Dispara o tempo silenciosamente no carregamento
 
     function calcularDiferenca(inicio, fim) {
         let diff = Math.abs(fim - inicio) / 1000;
@@ -217,12 +220,9 @@
         `;
         document.getElementById('tabela-corpo').prepend(linha);
 
-        seq++; 
-        validados++; 
-        restantes = Math.max(0, restantes - 1);
-        
+        seq++; validados++; restantes = Math.max(0, restantes - 1);
         atualizarInterface(true);
-        setNovoHorarioInicio(); // Reseta o cronômetro para o próximo documento
+        setNovoHorarioInicio(); // Reinicia tempo para o próximo item
     });
 
     function excluir(btn) {
