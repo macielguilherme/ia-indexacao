@@ -61,6 +61,7 @@
         .table thead th { background-color: #f8f9fa; font-size: 11px; text-transform: uppercase; }
         .table tbody td { font-size: 12px; vertical-align: middle; }
         .btn-remove { color: #dc3545; cursor: pointer; background: none; border: none; padding: 0; }
+        .text-right { text-align: right !important; }
         .badge-timer { background-color: #e9ecef; color: #495057; padding: 4px 8px; border-radius: 4px; font-family: monospace; }
     </style>
 </head>
@@ -127,7 +128,7 @@
                             <label class="small font-weight-bold">Descrição</label>
                             <textarea id="input-desc" rows="6" class="form-control" style="resize: none;">Memória de cálculo de proventos (horas extras, adicional noturno) e descontos legais (INSS, IRRF) referente ao mês 03/2026.</textarea>
                         </div>
-                        <div class="text-center mt-4">
+                        <div class="text-right mt-4">
                             <input type="submit" value="Validar indexação" class="btn btn-success">
                         </div>
                     </div>
@@ -182,7 +183,7 @@
         horarioInicioAtual = new Date();
     }
 
-    setNovoHorarioInicio(); // Dispara o tempo silenciosamente no carregamento
+    setNovoHorarioInicio(); 
 
     function calcularDiferenca(inicio, fim) {
         let diff = Math.abs(fim - inicio) / 1000;
@@ -222,7 +223,7 @@
 
         seq++; validados++; restantes = Math.max(0, restantes - 1);
         atualizarInterface(true);
-        setNovoHorarioInicio(); // Reinicia tempo para o próximo item
+        setNovoHorarioInicio(); 
     });
 
     function excluir(btn) {
