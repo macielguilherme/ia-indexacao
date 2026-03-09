@@ -1,196 +1,195 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indexação - SOS Docs</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
-    <style>
-        /* Estilos da TopNav (Baseado no seu código CSS) */
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #fff;
-            padding-top: 40px; /* Espaço para a barra fixa */
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indexação - SOS Docs</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        /* Estilos da TopNav (Baseado no seu código CSS) */
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #fff;
+            padding-top: 40px; /* Espaço para a barra fixa */
+        }
 
-        .topNav {
-            background: #2c363f; /* Fallback para o topnavBg.png */
-            background-image: linear-gradient(to bottom, #3c4852, #212a31);
-            display: block;
-            color: #eeeeee;
-            padding: 0;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 999;
-            height: 34px;
-            border-bottom: 1px solid #1c262b;
-        }
+        .topNav {
+            background: #2c363f; /* Fallback para o topnavBg.png */
+            background-image: linear-gradient(to bottom, #3c4852, #212a31);
+            display: block;
+            color: #eeeeee;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 999;
+            height: 34px;
+            border-bottom: 1px solid #1c262b;
+        }
 
-        .wrapper {
-            position: relative;
-            margin: 0 3%;
-        }
+        .wrapper {
+            position: relative;
+            margin: 0 3%;
+        }
 
-        .userNav {
-            float: right;
-            font-size: 11px;
-        }
+        .userNav {
+            float: right;
+            font-size: 11px;
+        }
 
-        .userNav ul {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            display: flex;
-            border-right: 1px solid #39454f;
-        }
+        .userNav ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            border-right: 1px solid #39454f;
+        }
 
-        .userNav ul li {
-            border-left: 1px solid #39454f;
-            border-right: 1px solid #1c262b;
-            display: flex;
-            align-items: center;
-            height: 34px;
-        }
+        .userNav ul li {
+            border-left: 1px solid #39454f;
+            border-right: 1px solid #1c262b;
+            display: flex;
+            align-items: center;
+            height: 34px;
+        }
 
-        .userNav ul li span, .userNav ul li a {
-            padding: 0 15px;
-            color: #eee;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            height: 100%;
-        }
+        .userNav ul li span, .userNav ul li a {
+            padding: 0 15px;
+            color: #eee;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
 
-        .userNav ul li a:hover {
-            background-color: rgba(255,255,255,0.05);
-        }
+        .userNav ul li a:hover {
+            background-color: rgba(255,255,255,0.05);
+        }
 
-        .userNav img, .userNav i {
-            margin-right: 8px;
-            opacity: 0.8;
-        }
+        .userNav img, .userNav i {
+            margin-right: 8px;
+            opacity: 0.8;
+        }
 
-        /* Estilos do Conteúdo Central */
-        .main-container {
-            text-align: center;
-            margin-top: 80px;
-        }
+        /* Estilos do Conteúdo Central */
+        .main-container {
+            text-align: center;
+            margin-top: 80px;
+        }
 
-        .page-title {
-            font-size: 3.5rem;
-            font-weight: 300;
-            color: #333;
-            margin-bottom: 0;
-        }
+        .page-title {
+            font-size: 3.5rem;
+            font-weight: 300;
+            color: #333;
+            margin-bottom: 0;
+        }
 
-        .page-subtitle {
-            font-size: 1.2rem;
-            color: #666;
-            margin-bottom: 50px;
-        }
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 50px;
+        }
 
-        /* Ajustes no Card para ficar igual à imagem */
-        .card {
-            max-width: 350px;
-            margin-left: 3%; /* Alinhado à esquerda como no print */
-            border-radius: 4px;
-            text-align: center;
-        }
+        /* Ajustes no Card para ficar igual à imagem */
+        .card {
+            max-width: 350px;
+            margin-left: 3%; /* Alinhado à esquerda como no print */
+            border-radius: 4px;
+            text-align: center;
+        }
 
-        .card-header {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid rgba(0,0,0,.125);
-            padding: 15px;
-        }
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid rgba(0,0,0,.125);
+            padding: 15px;
+        }
 
-        .card-header h4 {
-            font-size: 1.2rem;
-            margin: 0;
-            color: #444;
-        }
+        .card-header h4 {
+            font-size: 1.2rem;
+            margin: 0;
+            color: #444;
+        }
 
-        .card-title small {
-            font-size: 2rem;
-            color: #6c757d !important;
-            font-weight: 400;
-        }
+        .card-title small {
+            font-size: 2rem;
+            color: #6c757d !important;
+            font-weight: 400;
+        }
 
-        .list-unstyled li {
-            padding: 4px 0;
-            font-size: 0.95rem;
-            color: #333;
-        }
+        .list-unstyled li {
+            padding: 4px 0;
+            font-size: 0.95rem;
+            color: #333;
+        }
 
-        .btn-primary {
-            background-color: #007bff;
-            border: none;
-            font-size: 1.1rem;
-            padding: 10px;
-            border-radius: 4px;
-        }
-    </style>
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            font-size: 1.1rem;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
 
 <div class="topNav">
-    <div class="wrapper">
-        <div class="userNav">
-            <ul>
-                <li><span><strong>Demo</strong></span></li>
-                <li><span><strong>99999 | Demonstração</strong></span></li>
-                <li>
-                    <a href="#" title="Minha Conta">
-                        <i class="fas fa-user"></i>
-                        <span>GUILHERME FARIAS MACIEL RIBEIRO</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" title="Voltar">
-                        <i class="fas fa-reply"></i>
-                        <span>Voltar para Home</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:logout()" title="Sair">
-                        <i class="fas fa-share"></i>
-                        <span>Logout</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="clearfix"></div>
-    </div>
+    <div class="wrapper">
+        <div class="userNav">
+            <ul>
+                <li><span><strong>Demo</strong></span></li>
+                <li><span><strong>99999 | Demonstração</strong></span></li>
+                <li>
+                    <a href="#" title="Minha Conta">
+                        <i class="fas fa-user"></i>
+                        <span>GUILHERME FARIAS MACIEL RIBEIRO</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" title="Voltar">
+                        <i class="fas fa-reply"></i>
+                        <span>Voltar para Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:logout()" title="Sair">
+                        <i class="fas fa-share"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+    </div>
 </div>
 
 <div class="container-fluid">
-    <div class="main-container">
-        <h1 class="page-title">Indexação</h1>
-        <p class="page-subtitle">Selecione a indexação que deseja acessar.</p>
+    <div class="main-container">
+        <h1 class="page-title">Indexação</h1>
+        <p class="page-subtitle">Selecione a indexação que deseja acessar.</p>
 
-        <div class="card mb-4 shadow-sm">
-            <div class="card-header">
-                <h4 class="my-0 font-weight-normal">POC SEEDUC II</h4>
-            </div>
-            <div class="card-body">
-                <h1 class="card-title pricing-card-title">
-                    <small class="text-muted">Documento</small>
-                </h1>
-                <ul class="list-unstyled mt-3 mb-4">
-                    <li><b>Auditoria</b> : Sim</li>
-                    <li><b>Pasta</b> : DOCUMENTOS</li>
-                    <li><b>Documentos a Indexar</b> : 9193</li>
-                    <li><b>Documentos Indexados</b> : 31</li>
-                    <li><b>Etapa</b> : INDEXACAO</li>
-                </ul>
-                <a href="#" class="btn btn-lg btn-block btn-primary">Acessar Indexação</a>
-            </div>
-        </div>
-    </div>
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">POC SEEDUC II</h4>
+            </div>
+            <div class="card-body">
+                <h1 class="card-title pricing-card-title">
+                    <small class="text-muted">Documento</small>
+                </h1>
+                <ul class="list-unstyled mt-3 mb-4">
+                    <li><b>Auditoria</b> : Sim</li>
+                    <li><b>Pasta</b> : DOCUMENTOS</li>
+                    <li><b>Documentos a Indexar</b> : 9193</li>
+                    <li><b>Documentos Indexados</b> : 31</li>
+                    <li><b>Etapa</b> : INDEXACAO</li>
+                </ul>
+                <a href="#" class="btn btn-lg btn-block btn-primary">Acessar Indexação</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>
