@@ -8,16 +8,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
     <style>
-        /* Estilos da TopNav (Baseado no seu código CSS) */
+        /* Estilos da TopNav (Originais) */
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: #fff;
-            padding-top: 40px; /* Espaço para a barra fixa */
+            padding-top: 40px;
         }
 
         .topNav {
-            background: #2c363f; /* Fallback para o topnavBg.png */
+            background: #2c363f;
             background-image: linear-gradient(to bottom, #3c4852, #212a31);
             display: block;
             color: #eeeeee;
@@ -69,11 +69,6 @@
             background-color: rgba(255,255,255,0.05);
         }
 
-        .userNav img, .userNav i {
-            margin-right: 8px;
-            opacity: 0.8;
-        }
-
         /* Estilos do Conteúdo Central */
         .main-container {
             text-align: center;
@@ -93,10 +88,10 @@
             margin-bottom: 50px;
         }
 
-        /* Ajustes no Card para ficar igual à imagem */
+        /* Card */
         .card {
             max-width: 350px;
-            margin-left: 3%; /* Alinhado à esquerda como no print */
+            margin-left: 3%;
             border-radius: 4px;
             text-align: center;
         }
@@ -131,6 +126,22 @@
             font-size: 1.1rem;
             padding: 10px;
             border-radius: 4px;
+        }
+
+        /* Botão secundário neutro */
+        .btn-secondary-action {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #6c757d;
+            border: 1px solid #ced4da;
+            background-color: #fff;
+        }
+
+        .btn-secondary-action:hover {
+            background-color: #f8f9fa;
+            color: #495057;
+            border-color: #b1b7bd;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -186,7 +197,12 @@
                     <li><b>Documentos Indexados</b> : 31</li>
                     <li><b>Etapa</b> : INDEXACAO</li>
                 </ul>
+                
                 <a href="#" class="btn btn-lg btn-block btn-primary">Acessar Indexação</a>
+                
+                <a href="#" class="btn btn-block btn-secondary-action">
+                    Validar Metadados IA
+                </a>
             </div>
         </div>
     </div>
