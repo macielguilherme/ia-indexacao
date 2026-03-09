@@ -49,9 +49,11 @@
         }
         .btn-success:hover { background-color: #218838; border-color: #1e7e34; }
 
-        .table thead th { background-color: #f8f9fa; font-size: 12px; }
+        .table thead th { background-color: #f8f9fa; font-size: 11px; text-transform: uppercase; vertical-align: middle; }
+        .table tbody td { font-size: 12px; vertical-align: middle; }
         .btn-remove { color: #dc3545; cursor: pointer; background: none; border: none; padding: 0; }
         .text-right { text-align: right !important; }
+        .badge-timer { background-color: #e9ecef; color: #495057; padding: 4px 8px; border-radius: 4px; font-family: monospace; }
     </style>
 </head>
 <body>
@@ -62,7 +64,7 @@
             <ul>
                 <li><span><strong>Demo</strong></span></li>
                 <li><span><strong>99999 | Demonstração</strong></span></li>
-                <li><a href="#"><i class="fas fa-user"></i><span class="ml-1">GUILHERME FARIAS MACIEL RIBEIRO</span></a></li>
+                <li><a href="#"><i class="fas fa-user"></i><span class="ml-1" id="user-email">guilherme.ribeiro@sosdocs.com.br</span></a></li>
                 <li><a href="#"><i class="fas fa-reply"></i><span class="ml-1">Voltar</span></a></li>
                 <li><a href="javascript:logout()"><i class="fas fa-share"></i><span class="ml-1">Logout</span></a></li>
             </ul>
@@ -98,7 +100,10 @@
         <div class="col-md-6 pb-4">
             <form id="form-validacao">
                 <div class="card shadow-sm equal-height">
-                    <div class="card-header font-weight-bold">Dados Extraídos pela IA</div>
+                    <div class="card-header font-weight-bold d-flex justify-content-between">
+                        <span>Dados Extraídos pela IA</span>
+                        <span class="small text-muted" id="relogio-inicio">Início: --:--:--</span>
+                    </div>
                     <div class="card-body div-scroll">
                         <div class="form-group">
                             <label class="small font-weight-bold">Identificador SOS</label>
@@ -135,7 +140,7 @@
         </div>
     </div>
 
-    <div class="col-md-12">
+    <div class="col-md-12 px-0">
         <div class="card shadow-sm">
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -145,7 +150,10 @@
                                 <th class="text-center" width="40"><i class="fas fa-file-alt"></i></th>
                                 <th>Identificador SOS</th>
                                 <th>Descrição</th>
-                                <th>Horário</th>
+                                <th>Usuário</th>
+                                <th class="text-center">Início</th>
+                                <th class="text-center">Fim</th>
+                                <th class="text-center">Tempo</th>
                                 <th class="text-center" width="60">Ação</th>
                             </tr>
                         </thead>
@@ -161,19 +169,46 @@
     let seq = 1;
     let validados = 31;
     let restantes = 12;
+    let horarioInicioAtual = new Date();
+
+    // Inicia o horário de início assim que a página carrega
+    window.onload = function() {
+        setNovoHorarioInicio();
+    };
+
+    function setNovoHorarioInicio() {
+        horarioInicioAtual = new Date();
+        document.getElementById('relogio-inicio').innerText = "Início: " + horarioInicioAtual.toLocaleTimeString();
+    }
+
+    function calcularDiferenca(inicio, fim) {
+        let diff = Math.abs(fim - inicio) / 1000;
+        let minutos = Math.floor(diff / 60);
+        let segundos = Math.floor(diff % 60);
+        return `${minutos}m ${segundos}s`;
+    }
 
     document.getElementById('form-validacao').addEventListener('submit', function(e) {
         e.preventDefault();
+        
+        const horarioFim = new Date();
         const sos = document.getElementById('input-sos').value;
         const desc = document.getElementById('input-desc').value;
-        const agora = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const usuario = document.getElementById('user-email').innerText;
+        
+        const hInicioStr = horarioInicioAtual.toLocaleTimeString();
+        const hFimStr = horarioFim.toLocaleTimeString();
+        const tempoTotal = calcularDiferenca(horarioInicioAtual, horarioFim);
 
         const linha = document.createElement('tr');
         linha.innerHTML = `
             <td class="text-center text-success"><i class="fas fa-check-circle"></i></td>
             <td class="td-sos font-weight-bold">${sos}</td>
             <td class="td-desc small">${desc}</td>
-            <td class="small">${agora}</td>
+            <td class="small">${usuario}</td>
+            <td class="text-center small">${hInicioStr}</td>
+            <td class="text-center small">${hFimStr}</td>
+            <td class="text-center"><span class="badge-timer small font-weight-bold">${tempoTotal}</span></td>
             <td class="text-center">
                 <button class="btn-remove" onclick="excluir(this)" title="Estornar">
                     <i class="fas fa-reply text-info"></i>
@@ -182,8 +217,12 @@
         `;
         document.getElementById('tabela-corpo').prepend(linha);
 
-        seq++; validados++; restantes = Math.max(0, restantes - 1);
+        seq++; 
+        validados++; 
+        restantes = Math.max(0, restantes - 1);
+        
         atualizarInterface(true);
+        setNovoHorarioInicio(); // Reseta o cronômetro para o próximo documento
     });
 
     function excluir(btn) {
@@ -191,7 +230,7 @@
         document.getElementById('input-sos').value = row.querySelector('.td-sos').innerText;
         document.getElementById('input-desc').value = row.querySelector('.td-desc').innerText;
         row.remove();
-        validados--; restantes++; seq--; 
+        validados--; restantes++; seq--;
         atualizarInterface(false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
