@@ -7,12 +7,34 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+        /* Padronização de fontes */
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
             background-color: #f4f7f9;
             padding-top: 45px;
         }
+
+        /* Títulos padronizados */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 600;
+            line-height: 1.2;
+            color: #2c363f;
+        }
+
+        h4 {
+            font-size: 1.5rem;
+        }
+
+        h5 {
+            font-size: 1.25rem;
+        }
+
+        /* Top navigation */
         .topNav {
             background: #2c363f;
             background-image: linear-gradient(to bottom, #3c4852, #212a31);
@@ -25,19 +47,86 @@
             z-index: 999;
             height: 34px;
             border-bottom: 1px solid #1c262b;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
-        .wrapper { position: relative; margin: 0 3%; }
-        .userNav { float: right; font-size: 11px; }
-        .userNav ul { margin: 0; padding: 0; list-style: none; display: flex; border-right: 1px solid #39454f; }
-        .userNav ul li { border-left: 1px solid #39454f; border-right: 1px solid #1c262b; display: flex; align-items: center; height: 34px; }
-        .userNav ul li span, .userNav ul li a { padding: 0 15px; color: #eee; text-decoration: none; display: flex; align-items: center; height: 100%; }
-        
-        .card { border: 1px solid rgba(0, 0, 0, .125); border-radius: .25rem; margin-bottom: 1.5rem; background: #fff; }
-        .card-header { padding: .75rem 1.25rem; background-color: rgba(0, 0, 0, .03); border-bottom: 1px solid rgba(0, 0, 0, .125); }
-        
-        .equal-height { height: 550px; display: flex; flex-direction: column; }
-        .div-scroll { overflow-y: auto; flex-grow: 1; padding: 1.25rem; }
-        
+
+        .wrapper { 
+            position: relative; 
+            margin: 0 3%; 
+        }
+
+        .userNav { 
+            float: right; 
+            font-size: 11px; 
+        }
+
+        .userNav ul { 
+            margin: 0; 
+            padding: 0; 
+            list-style: none; 
+            display: flex; 
+            border-right: 1px solid #39454f; 
+        }
+
+        .userNav ul li { 
+            border-left: 1px solid #39454f; 
+            border-right: 1px solid #1c262b; 
+            display: flex; 
+            align-items: center; 
+            height: 34px; 
+        }
+
+        .userNav ul li span, 
+        .userNav ul li a { 
+            padding: 0 15px; 
+            color: #eee; 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            height: 100%;
+            font-size: 11px;
+            font-weight: 400;
+        }
+
+        .userNav ul li span strong {
+            font-weight: 600;
+        }
+
+        /* Cards */
+        .card { 
+            border: 1px solid rgba(0, 0, 0, .125); 
+            border-radius: .25rem; 
+            margin-bottom: 1.5rem; 
+            background: #fff;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .card-header { 
+            padding: .75rem 1.25rem; 
+            background-color: rgba(0, 0, 0, .03); 
+            border-bottom: 1px solid rgba(0, 0, 0, .125);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .card-body {
+            font-size: 14px;
+        }
+
+        /* Altura igual para cards */
+        .equal-height { 
+            height: 550px; 
+            display: flex; 
+            flex-direction: column; 
+        }
+
+        .div-scroll { 
+            overflow-y: auto; 
+            flex-grow: 1; 
+            padding: 1.25rem; 
+        }
+
+        /* PDF viewer */
         .embed-responsive { 
             position: relative; 
             display: block; 
@@ -45,28 +134,190 @@
             height: 100%; 
             background-color: #525659; 
             border: 1px solid #ddd; 
-            overflow: hidden;
+            overflow: hidden; 
         }
-        #pdf-frame { width: 100%; height: 100%; border: none; }
 
+        #pdf-frame { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+        }
+
+        /* Botões */
         .btn-success {
             background-color: #28a745;
             border-color: #28a745;
             font-weight: 700;
             padding: 10px 60px;
             font-size: 16px;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
-        .btn-success:hover { background-color: #218838; }
 
-        .table thead th { background-color: #f8f9fa; font-size: 11px; text-transform: uppercase; }
-        .table tbody td { font-size: 12px; vertical-align: middle; }
-        .btn-remove { color: #dc3545; cursor: pointer; background: none; border: none; padding: 0; }
-        .text-right { text-align: right !important; }
-        .badge-timer { background-color: #e9ecef; color: #495057; padding: 4px 8px; border-radius: 4px; font-family: monospace; }
+        .btn-success:hover { 
+            background-color: #218838; 
+        }
+
+        .btn-link {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1rem;
+        }
+
+        /* Formulários */
+        .form-control {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+        }
+
+        .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.25rem;
+        }
+
+        select.form-control {
+            font-size: 14px;
+        }
+
+        textarea.form-control {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Tabelas */
+        .table {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 12px;
+        }
+
+        .table thead th { 
+            background-color: #f8f9fa; 
+            font-size: 11px; 
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .table tbody td { 
+            font-size: 12px; 
+            vertical-align: middle;
+            padding: 0.5rem;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0,0,0,.02);
+        }
+
+        .table-bordered {
+            border: 1px solid #dee2e6;
+        }
+
+        .small {
+            font-size: 11px !important;
+        }
+
+        .font-weight-bold {
+            font-weight: 600 !important;
+        }
+
+        /* Badges e timers */
+        .badge-timer { 
+            background-color: #e9ecef; 
+            color: #495057; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Text colors */
+        .text-primary {
+            color: #007bff !important;
+        }
+
+        .text-success {
+            color: #28a745 !important;
+        }
+
+        .text-info {
+            color: #17a2b8 !important;
+        }
+
+        /* Botões de remoção */
+        .btn-remove { 
+            color: #dc3545; 
+            cursor: pointer; 
+            background: none; 
+            border: none; 
+            padding: 0;
+            font-size: 14px;
+        }
+
+        .btn-remove:hover {
+            color: #c82333;
+        }
+
+        /* Card group */
+        .card-group .card {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .card-group .card .h4 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-group .card .h5 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Clearfix */
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        /* Links */
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+        /* Margens e paddings consistentes */
+        .ml-1 { margin-left: 0.25rem !important; }
+        .ml-2 { margin-left: 0.5rem !important; }
+        .mr-1 { margin-right: 0.25rem !important; }
+        .mr-2 { margin-right: 0.5rem !important; }
+        .mt-2 { margin-top: 0.5rem !important; }
+        .mt-4 { margin-top: 1.5rem !important; }
+        .mb-0 { margin-bottom: 0 !important; }
+        .pt-2 { padding-top: 0.5rem !important; }
+        .pb-4 { padding-bottom: 1.5rem !important; }
+        .p-0 { padding: 0 !important; }
+        .p-2 { padding: 0.5rem !important; }
     </style>
 </head>
 <body>
-
 <div class="topNav">
     <div class="wrapper">
         <div class="userNav">
@@ -183,7 +434,7 @@
         horarioInicioAtual = new Date();
     }
 
-    setNovoHorarioInicio(); 
+    setNovoHorarioInicio();
 
     function calcularDiferenca(inicio, fim) {
         let diff = Math.abs(fim - inicio) / 1000;
@@ -194,12 +445,12 @@
 
     document.getElementById('form-validacao').addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         const horarioFim = new Date();
         const sos = document.getElementById('input-sos').value;
         const desc = document.getElementById('input-desc').value;
         const usuario = document.getElementById('user-email').innerText;
-        
+
         const hInicioStr = horarioInicioAtual.toLocaleTimeString();
         const hFimStr = horarioFim.toLocaleTimeString();
         const tempoTotal = calcularDiferenca(horarioInicioAtual, horarioFim);
@@ -223,7 +474,7 @@
 
         seq++; validados++; restantes = Math.max(0, restantes - 1);
         atualizarInterface(true);
-        setNovoHorarioInicio(); 
+        setNovoHorarioInicio();
     });
 
     function excluir(btn) {
