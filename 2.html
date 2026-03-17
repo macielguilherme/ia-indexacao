@@ -59,12 +59,32 @@
         .embed-responsive { position: relative; display: block; width: 100%; height: 100%; background-color: #525659; border: 1px solid #ddd; }
         
         /* Botões */
-        .btn-success { background-color: #28a745; border-color: #28a745; font-weight: 700; padding: 10px 60px; font-size: 16px; }
+        .btn-success { 
+            background-color: #28a745; 
+            border-color: #28a745; 
+            font-weight: 700; 
+            padding: 10px 60px; 
+            font-size: 16px; 
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
         .btn-success:hover { background-color: #218838; }
+        .btn-success:disabled { 
+            background-color: #6c757d; 
+            border-color: #6c757d; 
+            cursor: not-allowed; 
+            opacity: 0.65; 
+        }
 
         /* Tabelas */
         .table { font-size: 12px; }
-        .table thead th { background-color: #f8f9fa; font-size: 11px; text-transform: uppercase; color: #495057; border-bottom: 2px solid #dee2e6; }
+        .table thead th { 
+            background-color: #f8f9fa; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            color: #495057; 
+            border-bottom: 2px solid #dee2e6; 
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
         
         /* Botões de ação */
         .btn-edit { 
@@ -100,9 +120,78 @@
             display: none;
             z-index: 1000;
             margin-bottom: 5px;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
         [data-tooltip]:hover:before {
             display: block;
+        }
+
+        /* Modal de conclusão - Padronizado com a página */
+        .modal-conclusao {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-conteudo {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: .25rem;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, .125);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        .modal-conteudo i {
+            font-size: 60px;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        .modal-conteudo h4 {
+            color: #2c363f;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        .modal-conteudo p {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .modal-conteudo button {
+            padding: 10px 60px;
+            font-size: 16px;
+            font-weight: 700;
+            background-color: #28a745;
+            border-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: .25rem;
+            cursor: pointer;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        .modal-conteudo button:hover {
+            background-color: #218838;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
     </style>
 </head>
@@ -120,6 +209,16 @@
             </ul>
         </div>
         <div class="clearfix"></div>
+    </div>
+</div>
+
+<!-- Modal de conclusão - Padronizado -->
+<div id="modalConclusao" class="modal-conclusao">
+    <div class="modal-conteudo">
+        <i class="fas fa-check-circle"></i>
+        <h4>Parabéns!</h4>
+        <p>Validação concluída com sucesso.<br>No momento, não há mais documentos na fila.</p>
+        <button onclick="fecharModal()">OK</button>
     </div>
 </div>
 
@@ -168,7 +267,7 @@
                             <textarea id="input-desc" rows="6" class="form-control" style="resize: none;">Memória de cálculo de proventos (horas extras, adicional noturno) e descontos legais (INSS, IRRF) referente ao mês 03/2026.</textarea>
                         </div>
                         <div class="text-right mt-4">
-                            <input type="submit" value="Validar Indexação" class="btn btn-success">
+                            <input type="submit" value="Validar Indexação" class="btn btn-success" id="btnValidar">
                         </div>
                     </div>
                 </div>
@@ -213,9 +312,18 @@
     let seq = 1;
     let validados = 31;
     let restantes = 12;
+    const totalFila = 142;
+
+    function fecharModal() {
+        document.getElementById('modalConclusao').style.display = 'none';
+    }
 
     document.getElementById('form-validacao').addEventListener('submit', function(e) {
         e.preventDefault();
+
+        if (restantes <= 0) {
+            return;
+        }
 
         const sos = document.getElementById('input-sos').value;
         const desc = document.getElementById('input-desc').value;
@@ -237,6 +345,17 @@
 
         seq++; validados++; restantes = Math.max(0, restantes - 1);
         atualizarInterface(true);
+        
+        // Verifica se a fila acabou
+        if (restantes === 0) {
+            document.getElementById('btnValidar').disabled = true;
+            document.getElementById('modalConclusao').style.display = 'flex';
+            
+            // Desabilita o formulário visualmente
+            document.getElementById('input-sos').disabled = true;
+            document.getElementById('input-class').disabled = true;
+            document.getElementById('input-desc').disabled = true;
+        }
     });
 
     function editar(btn) {
@@ -248,6 +367,15 @@
         row.remove();
         validados--; restantes++; seq--;
         atualizarInterface(false);
+        
+        // Reabilita o formulário se estava desabilitado
+        if (document.getElementById('btnValidar').disabled) {
+            document.getElementById('btnValidar').disabled = false;
+            document.getElementById('input-sos').disabled = false;
+            document.getElementById('input-class').disabled = false;
+            document.getElementById('input-desc').disabled = false;
+        }
+        
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -261,6 +389,14 @@
         document.getElementById('countValidados').innerText = validados;
         document.getElementById('itensRestantes').innerText = restantes;
         document.getElementById('pos-fila').innerText = seq;
+    }
+
+    // Fecha o modal se clicar fora dele
+    window.onclick = function(event) {
+        const modal = document.getElementById('modalConclusao');
+        if (event.target === modal) {
+            fecharModal();
+        }
     }
 </script>
 </body>
