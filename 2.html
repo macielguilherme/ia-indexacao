@@ -67,10 +67,43 @@
         .table thead th { background-color: #f8f9fa; font-size: 11px; text-transform: uppercase; color: #495057; border-bottom: 2px solid #dee2e6; }
         
         /* Botões de ação */
-        .btn-edit { color: #17a2b8; cursor: pointer; background: none; border: none; padding: 0; font-size: 16px; }
+        .btn-edit { 
+            color: #17a2b8; 
+            cursor: pointer; 
+            background: none; 
+            border: none; 
+            padding: 0; 
+            font-size: 16px;
+        }
         .btn-edit:hover { color: #138496; }
+        .btn-edit i { font-size: 16px; }
 
         .clearfix::after { content: ""; clear: both; display: table; }
+
+        /* Tooltip customizado */
+        [data-tooltip] {
+            position: relative;
+            cursor: pointer;
+        }
+        [data-tooltip]:before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 4px 8px;
+            background: #333;
+            color: white;
+            font-size: 12px;
+            border-radius: 4px;
+            white-space: nowrap;
+            display: none;
+            z-index: 1000;
+            margin-bottom: 5px;
+        }
+        [data-tooltip]:hover:before {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -95,7 +128,7 @@
         <div class="card-header">
             <h5 class="mb-0">
                 <button class="btn btn-link" type="button" style="text-decoration:none; color:#007bff; text-align:left; width:100%;">
-                    <label class="mb-0">Fluxo: </label> <span>Validação de Metadados IA</span>
+                    <label class="mb-0">Fluxo: </label> <span>Validação de Extração de Metadados por I.A</span>
                     <label class="mb-0 ml-2">| Validador: </label> <span>GUILHERME FARIAS MACIEL RIBEIRO</span>
                     <i class="fas fa-angle-double-down float-right"></i>
                 </button>
@@ -103,7 +136,7 @@
         </div>
         <div class="card-body">
             <div class="card-group text-center">
-                <div class="card bg-light"><div class="card-body p-2">Fila IA<br><b class="h4">142</b></div></div>
+                <div class="card bg-light"><div class="card-body p-2">Fila de Validação<br><b class="h4">142</b></div></div>
                 <div class="card bg-light"><div class="card-body p-2">Restantes<br><b id="itensRestantes" class="h4">12</b></div></div>
                 <div class="card bg-light"><div class="card-body p-2">Validados hoje<br><b id="countValidados" class="h5">31</b></div></div>
             </div>
@@ -135,7 +168,7 @@
                             <textarea id="input-desc" rows="6" class="form-control" style="resize: none;">Memória de cálculo de proventos (horas extras, adicional noturno) e descontos legais (INSS, IRRF) referente ao mês 03/2026.</textarea>
                         </div>
                         <div class="text-right mt-4">
-                            <input type="submit" value="Validar indexação" class="btn btn-success">
+                            <input type="submit" value="Validar Indexação" class="btn btn-success">
                         </div>
                     </div>
                 </div>
@@ -195,8 +228,8 @@
             <td class="td-desc small">${desc}</td>
             <td class="small">${usuario}</td>
             <td class="text-center">
-                <button class="btn-edit" onclick="editar(this)" title="Editar">
-                    <i class="fas fa-edit"></i> Editar
+                <button class="btn-edit" data-tooltip="Editar" onclick="editar(this)" title="">
+                    <i class="fas fa-edit"></i>
                 </button>
             </td>
         `;
