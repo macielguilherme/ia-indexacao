@@ -226,14 +226,7 @@
             </h5>
         </div>
         <div class="card-body">
-            <div class="card-group text-center">
-                <div class="card bg-light"><div class="card-body p-2">Fila de Validação<br><b class="h4">142</b></div></div>
-                <div class="card bg-light"><div class="card-body p-2">Restantes<br><b id="itensRestantes" class="h4">12</b></div></div>
-                <div class="card bg-light"><div class="card-body p-2">Validados hoje<br><b id="countValidados" class="h5">31</b></div></div>
-            </div>
-            <div class="text-center mt-2 small text-primary">
-                Identificador SOS: <span id="doc-id-display" class="font-weight-bold">DC000000000001SOS</span> | Posição: <span id="pos-fila">1</span>/142
-            </div>
+            <!-- Linha removida conforme solicitado -->
         </div>
     </div>
 
@@ -338,8 +331,8 @@
         seq++; validados++; restantes = Math.max(0, restantes - 1);
         atualizarInterface(true);
         
-        // Verifica se a fila acabou
-        if (restantes === 0) {
+        // Verifica se restantes chegou a 10 para exibir o modal
+        if (restantes === 10) {
             document.getElementById('btnValidar').disabled = true;
             document.getElementById('modalConclusao').style.display = 'flex';
             
@@ -377,10 +370,7 @@
             document.getElementById('input-sos').value = novoSos;
             document.getElementById('input-desc').value = "Processo de cálculo de encargos e descontos sindicais - Lote " + seq;
         }
-        document.getElementById('doc-id-display').innerText = document.getElementById('input-sos').value;
-        document.getElementById('countValidados').innerText = validados;
-        document.getElementById('itensRestantes').innerText = restantes;
-        document.getElementById('pos-fila').innerText = seq;
+        // Removidas as atualizações dos elementos que não existem mais
     }
 
     // Fecha o modal se clicar fora dele
