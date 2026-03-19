@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOS Docs - Validação de Metadados IA</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Padronização de fontes */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+            background-color: #f4f7f9;
+            padding-top: 45px;
+        }
+        /* Títulos padronizados */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 600;
+            line-height: 1.2;
+            color: #2c363f;
+        }
+        h4 { font-size: 1.5rem; }
+        h5 { font-size: 1.25rem; }
+
+        /* Top navigation */
+        .topNav {
+            background: #2c363f;
+            background-image: linear-gradient(to bottom, #3c4852, #212a31);
+            display: block;
+            color: #eeeeee;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 999;
+            height: 34px;
+            border-bottom: 1px solid #1c262b;
+        }
+        .wrapper { position: relative; margin: 0 3%; }
+        .userNav { float: right; font-size: 11px; }
+        .userNav ul { margin: 0; padding: 0; list-style: none; display: flex; border-right: 1px solid #39454f; }
+        .userNav ul li { border-left: 1px solid #39454f; border-right: 1px solid #1c262b; display: flex; align-items: center; height: 34px; }
+        .userNav ul li span, .userNav ul li a { padding: 0 15px; color: #eee; text-decoration: none; display: flex; align-items: center; height: 100%; font-size: 11px; }
+
+        /* Cards */
+        .card { border: 1px solid rgba(0, 0, 0, .125); border-radius: .25rem; margin-bottom: 1.5rem; background: #fff; }
+        .card-header { padding: .75rem 1.25rem; background-color: rgba(0, 0, 0, .03); border-bottom: 1px solid rgba(0, 0, 0, .125); font-weight: 600; }
+        
+        /* Altura igual para cards */
+        .equal-height { height: 550px; display: flex; flex-direction: column; }
+        .div-scroll { overflow-y: auto; flex-grow: 1; padding: 1.25rem; }
+
+        /* PDF viewer */
+        .embed-responsive { position: relative; display: block; width: 100%; height: 100%; background-color: #525659; border: 1px solid #ddd; }
+        
+        /* Botões */
+        .btn-success { 
+            background-color: #28a745; 
+            border-color: #28a745; 
+            font-weight: 700; 
+            padding: 10px 60px; 
+            font-size: 16px; 
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        .btn-success:hover { background-color: #218838; }
+        .btn-success:disabled { 
+            background-color: #6c757d; 
+            border-color: #6c757d; 
+            cursor: not-allowed; 
+            opacity: 0.65; 
+        }
+
+        /* Tabelas */
+        .table { font-size: 12px; }
+        .table thead th { 
+            background-color: #f8f9fa; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            color: #495057; 
+            border-bottom: 2px solid #dee2e6; 
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        /* Botões de ação */
+        .btn-edit { 
+            color: #17a2b8; 
+            cursor: pointer; 
+            background: none; 
+            border: none; 
+            padding: 0; 
+            font-size: 16px;
+        }
+        .btn-edit:hover { color: #138496; }
+        .btn-edit i { font-size: 16px; }
+
+        .clearfix::after { content: ""; clear: both; display: table; }
+
+        /* Tooltip customizado */
+        [data-tooltip] {
+            position: relative;
+            cursor: pointer;
+        }
+        [data-tooltip]:before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 4px 8px;
+            background: #333;
+            color: white;
+            font-size: 12px;
+            border-radius: 4px;
+            white-space: nowrap;
+            display: none;
+            z-index: 1000;
+            margin-bottom: 5px;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        [data-tooltip]:hover:before {
+            display: block;
+        }
+
+        /* Modal de conclusão - Padronizado com a página */
+        .modal-conclusao {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-conteudo {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: .25rem;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, .125);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        .modal-conteudo i {
+            font-size: 60px;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        .modal-conteudo p {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .modal-conteudo button {
+            padding: 10px 60px;
+            font-size: 16px;
+            font-weight: 700;
+            background-color: #28a745;
+            border-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: .25rem;
+            cursor: pointer;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        .modal-conteudo button:hover {
+            background-color: #218838;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topNav">
+    <div class="wrapper">
+        <div class="userNav">
+            <ul>
+                <li><span><strong>Demo</strong></span></li>
+                <li><span><strong>99999 | Demonstração</strong></span></li>
+                <li><a href="#"><i class="fas fa-user"></i><span class="ml-1" id="user-email">guilherme.ribeiro@sosdocs.com.br</span></a></li>
+                <li><a href="#"><i class="fas fa-reply"></i><span class="ml-1">Voltar</span></a></li>
+                <li><a href="#"><i class="fas fa-share"></i><span class="ml-1">Logout</span></a></li>
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+<!-- Modal de conclusão - Padronizado sem "Parabéns" -->
+<div id="modalConclusao" class="modal-conclusao">
+    <div class="modal-conteudo">
+        <i class="fas fa-check-circle"></i>
+        <p>Validação concluída com sucesso.<br>No momento, não há mais documentos na fila.</p>
+        <button onclick="fecharModal()">OK</button>
+    </div>
+</div>
+
+<div class="container-fluid pt-2">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <button class="btn btn-link" type="button" style="text-decoration:none; color:#007bff; text-align:left; width:100%;">
+                    <label class="mb-0">Fluxo: </label> <span>Validação de Extração de Metadados por I.A</span>
+                    <label class="mb-0 ml-2">| Validador: </label> <span>GUILHERME FARIAS MACIEL RIBEIRO</span>
+                    <i class="fas fa-angle-double-down float-right"></i>
+                </button>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card-group text-center">
+                <div class="card bg-light"><div class="card-body p-2">Fila de Validação<br><b class="h4">142</b></div></div>
+                <div class="card bg-light"><div class="card-body p-2">Restantes<br><b id="itensRestantes" class="h4">12</b></div></div>
+                <div class="card bg-light"><div class="card-body p-2">Validados hoje<br><b id="countValidados" class="h5">31</b></div></div>
+            </div>
+            <div class="text-center mt-2 small text-primary">
+                Identificador SOS: <span id="doc-id-display" class="font-weight-bold">DC000000000001SOS</span> | Posição: <span id="pos-fila">1</span>/142
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-5 pb-4">
+            <form id="form-validacao">
+                <div class="card shadow-sm equal-height">
+                    <div class="card-header font-weight-bold">Dados Extraídos pela IA</div>
+                    <div class="card-body div-scroll">
+                        <div class="form-group">
+                            <label class="small font-weight-bold">Identificador SOS</label>
+                            <input type="text" id="input-sos" class="form-control font-weight-bold" value="DC000000000001SOS">
+                        </div>
+                        <div class="form-group">
+                            <label class="small font-weight-bold">Classificação</label>
+                            <select id="input-class" class="form-control">
+                                <option value="003.05.01.009">003.05.01.009 | Processo de cálculo de proventos e descontos</option>
+                                <option value="003.05.01.010">003.05.01.010 | Folha de Pagamento - Mensal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="small font-weight-bold">Descrição</label>
+                            <textarea id="input-desc" rows="6" class="form-control" style="resize: none;">Memória de cálculo de proventos (horas extras, adicional noturno) e descontos legais (INSS, IRRF) referente ao mês 03/2026.</textarea>
+                        </div>
+                        <div class="text-right mt-4">
+                            <input type="submit" value="Validar Indexação" class="btn btn-success" id="btnValidar">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-7 pb-4">
+            <div class="card shadow-sm equal-height">
+                <div class="card-header font-weight-bold">Visualizador de Documento</div>
+                <div class="card-body p-0">
+                    <div class="embed-responsive">
+                        <iframe id="pdf-frame" src="data:application/pdf;base64,JVBERi0xLjQKJeeh5tTHCjEgMCBvYmoKPDwKL1R5cGUgL0NhdGFsb2cKL1BhZ2VzIDIgMCBSCj4+CmVuZG9iagoyIDAgb2JqCjw8Ci9UeXBlIC9QYWdlcwovS2lkcyBbMyAwIFJdCi9Db3VudCAxCj4+CmVuZG9iagozIDAgb2JqCjw8Ci9UeXBlIC9QYWdlCi9QYXJlbnQgMiAwIFIKL01lZGlhQm94IFswIDAgNTk1IDg0Ml0KL1Jlc291cmNlcyA8PAo+PgovQ29udGVudHMgNCAwIFIKPj4KZW5kb2JqCjQgMCBvYmoKPDwKL0xlbmd0aCAwCj4+CnN0cmVhbQplbmRzdHJlYW0KZW5kb2JqCnRyYWlsZXIKPDwKL1NpemUgNgovUm9vdCAxIDAgUgo+PgpzdGFydHhyZWYKMjI4CiUlRU9G" width="100%" height="100%" style="border: none;"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 px-0">
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-sm mb-0 w-100">
+                        <thead>
+                            <tr>
+                                <th class="text-center" width="40"><i class="fas fa-file-alt"></i></th>
+                                <th>Identificador SOS</th>
+                                <th>Descrição</th>
+                                <th>Usuário</th>
+                                <th class="text-center" width="80">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-corpo"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let seq = 1;
+    let validados = 31;
+    let restantes = 12;
+    const totalFila = 142;
+
+    function fecharModal() {
+        document.getElementById('modalConclusao').style.display = 'none';
+    }
+
+    document.getElementById('form-validacao').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (restantes <= 0) {
+            return;
+        }
+
+        const sos = document.getElementById('input-sos').value;
+        const desc = document.getElementById('input-desc').value;
+        const usuario = document.getElementById('user-email').innerText;
+
+        const linha = document.createElement('tr');
+        linha.innerHTML = `
+            <td class="text-center text-success"><i class="fas fa-check-circle"></i></td>
+            <td class="td-sos font-weight-bold">${sos}</td>
+            <td class="td-desc small">${desc}</td>
+            <td class="small">${usuario}</td>
+            <td class="text-center">
+                <button class="btn-edit" data-tooltip="Editar" onclick="editar(this)" title="">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+        `;
+        document.getElementById('tabela-corpo').prepend(linha);
+
+        seq++; validados++; restantes = Math.max(0, restantes - 1);
+        atualizarInterface(true);
+        
+        // Verifica se a fila acabou
+        if (restantes === 0) {
+            document.getElementById('btnValidar').disabled = true;
+            document.getElementById('modalConclusao').style.display = 'flex';
+            
+            // Desabilita o formulário visualmente
+            document.getElementById('input-sos').disabled = true;
+            document.getElementById('input-class').disabled = true;
+            document.getElementById('input-desc').disabled = true;
+        }
+    });
+
+    function editar(btn) {
+        const row = btn.closest('tr');
+        // Devolve os dados para o formulário para edição
+        document.getElementById('input-sos').value = row.querySelector('.td-sos').innerText;
+        document.getElementById('input-desc').value = row.querySelector('.td-desc').innerText;
+        
+        row.remove();
+        validados--; restantes++; seq--;
+        atualizarInterface(false);
+        
+        // Reabilita o formulário se estava desabilitado
+        if (document.getElementById('btnValidar').disabled) {
+            document.getElementById('btnValidar').disabled = false;
+            document.getElementById('input-sos').disabled = false;
+            document.getElementById('input-class').disabled = false;
+            document.getElementById('input-desc').disabled = false;
+        }
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function atualizarInterface(isNovo) {
+        if(isNovo) {
+            const novoSos = "DC" + String(seq).padStart(12, '0') + "SOS";
+            document.getElementById('input-sos').value = novoSos;
+            document.getElementById('input-desc').value = "Processo de cálculo de encargos e descontos sindicais - Lote " + seq;
+        }
+        document.getElementById('doc-id-display').innerText = document.getElementById('input-sos').value;
+        document.getElementById('countValidados').innerText = validados;
+        document.getElementById('itensRestantes').innerText = restantes;
+        document.getElementById('pos-fila').innerText = seq;
+    }
+
+    // Fecha o modal se clicar fora dele
+    window.onclick = function(event) {
+        const modal = document.getElementById('modalConclusao');
+        if (event.target === modal) {
+            fecharModal();
+        }
+    }
+</script>
+</body>
+</html>
