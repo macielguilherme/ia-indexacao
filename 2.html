@@ -205,7 +205,7 @@
     </div>
 </div>
 
-<!-- Modal de conclusão - Padronizado sem "Parabéns" -->
+<!-- Modal de conclusão -->
 <div id="modalConclusao" class="modal-conclusao">
     <div class="modal-conteudo">
         <i class="fas fa-check-circle"></i>
@@ -298,6 +298,7 @@
     let validados = 31;
     let restantes = 12;
     const totalFila = 142;
+    let contadorValidacoes = 0; // Contador para controlar as 10 validações
 
     function fecharModal() {
         document.getElementById('modalConclusao').style.display = 'none';
@@ -329,10 +330,12 @@
         document.getElementById('tabela-corpo').prepend(linha);
 
         seq++; validados++; restantes = Math.max(0, restantes - 1);
+        contadorValidacoes++;
+        
         atualizarInterface(true);
         
-        // Verifica se restantes chegou a 10 para exibir o modal
-        if (restantes === 10) {
+        // Verifica se já validou 10 documentos
+        if (contadorValidacoes === 10) {
             document.getElementById('btnValidar').disabled = true;
             document.getElementById('modalConclusao').style.display = 'flex';
             
@@ -351,6 +354,8 @@
         
         row.remove();
         validados--; restantes++; seq--;
+        contadorValidacoes--; // Decrementa o contador ao editar/remover
+        
         atualizarInterface(false);
         
         // Reabilita o formulário se estava desabilitado
@@ -370,7 +375,6 @@
             document.getElementById('input-sos').value = novoSos;
             document.getElementById('input-desc').value = "Processo de cálculo de encargos e descontos sindicais - Lote " + seq;
         }
-        // Removidas as atualizações dos elementos que não existem mais
     }
 
     // Fecha o modal se clicar fora dele
