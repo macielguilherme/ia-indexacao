@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOS Docs - Validação de Metadados IA</title>
+    <title>SOS Docs - Validação e Revisão de Metadados IA</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -46,6 +46,7 @@
         .userNav ul { margin: 0; padding: 0; list-style: none; display: flex; border-right: 1px solid #39454f; }
         .userNav ul li { border-left: 1px solid #39454f; border-right: 1px solid #1c262b; display: flex; align-items: center; height: 34px; }
         .userNav ul li span, .userNav ul li a { padding: 0 15px; color: #eee; text-decoration: none; display: flex; align-items: center; height: 100%; font-size: 11px; }
+        .userNav ul li a:hover { background-color: rgba(255,255,255,0.05); }
 
         /* Cards */
         .card { border: 1px solid rgba(0, 0, 0, .125); border-radius: .25rem; margin-bottom: 1.5rem; background: #fff; }
@@ -126,7 +127,7 @@
             display: block;
         }
 
-        /* Modal de conclusão - Padronizado com a página */
+        /* Modal de conclusão */
         .modal-conclusao {
             display: none;
             position: fixed;
@@ -186,6 +187,151 @@
                 opacity: 1;
             }
         }
+
+        /* ========== ESTILOS DA TELA DE REVISÃO ========== */
+        .badge-tipo {
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .confidence-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background-color: #f8f9fa;
+        }
+        .confidence-high { color: #28a745; background-color: #d4edda; }
+        .confidence-medium { color: #ffc107; background-color: #fff3cd; }
+        .confidence-low { color: #dc3545; background-color: #f8d7da; }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+        }
+        .info-row:last-child { border-bottom: none; }
+        
+        .info-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            font-weight: 500;
+            min-width: 120px;
+        }
+        
+        .info-value {
+            font-weight: 500;
+            font-size: 0.85rem;
+            flex: 1;
+            margin-left: 15px;
+            color: #2c363f;
+        }
+        
+        .info-confidence {
+            font-size: 0.7rem;
+            min-width: 55px;
+            text-align: right;
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: .5rem;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        
+        .btn-back {
+            background-color: #6c757d;
+            border: none;
+            padding: 10px 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #fff;
+            border-radius: .25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+        
+        .btn-save {
+            background-color: #28a745;
+            border: none;
+            padding: 10px 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #fff;
+            border-radius: .25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-save:hover {
+            background-color: #218838;
+        }
+        
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .document-title {
+            flex: 1;
+        }
+        
+        .document-meta {
+            text-align: right;
+        }
+        
+        .extracao-text {
+            font-size: 0.7rem;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+        
+        .form-control-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+        
+        /* Container dos formulários */
+        .form-container {
+            transition: all 0.3s ease;
+        }
+        
+        .form-container.hidden {
+            display: none;
+        }
+        
+        /* Valor fixo (sem edição) */
+        .info-value.fixed {
+            cursor: default;
+        }
     </style>
 </head>
 <body>
@@ -232,31 +378,103 @@
 
     <div class="row">
         <div class="col-md-5 pb-4">
-            <form id="form-validacao">
+            <!-- FORMULÁRIO DE VALIDAÇÃO -->
+            <div id="formContainer" class="form-container">
+                <form id="form-validacao">
+                    <div class="card shadow-sm equal-height">
+                        <div class="card-header font-weight-bold">Dados Extraídos pela IA</div>
+                        <div class="card-body div-scroll">
+                            <div class="form-group">
+                                <label class="small font-weight-bold">Identificador SOS</label>
+                                <input type="text" id="input-sos" class="form-control font-weight-bold" value="DC000000000001SOS">
+                            </div>
+                            <div class="form-group">
+                                <label class="small font-weight-bold">Classificação</label>
+                                <select id="input-class" class="form-control">
+                                    <option value="003.05.01.009">003.05.01.009 | Processo de cálculo de proventos e descontos</option>
+                                    <option value="003.05.01.010">003.05.01.010 | Folha de Pagamento - Mensal</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="small font-weight-bold">Descrição</label>
+                                <textarea id="input-desc" rows="6" class="form-control" style="resize: none;">Memória de cálculo de proventos (horas extras, adicional noturno) e descontos legais (INSS, IRRF) referente ao mês 03/2026.</textarea>
+                            </div>
+                            <div class="text-right mt-4">
+                                <input type="submit" value="Validar Indexação" class="btn btn-success" id="btnValidar">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ÁREA DE REVISÃO (substitui o formulário - SEM LÁPIS) -->
+            <div id="revisaoContainer" class="form-container hidden">
                 <div class="card shadow-sm equal-height">
-                    <div class="card-header font-weight-bold">Dados Extraídos pela IA</div>
+                    <div class="card-header font-weight-bold">Revisão de Metadados</div>
                     <div class="card-body div-scroll">
-                        <div class="form-group">
-                            <label class="small font-weight-bold">Identificador SOS</label>
-                            <input type="text" id="input-sos" class="form-control font-weight-bold" value="DC000000000001SOS">
+                        <div class="document-header">
+                            <div class="document-title">
+                                <h5 class="mb-1">memoria_calculo_032026.pdf</h5>
+                                <span class="badge-tipo">Memória de Cálculo</span>
+                            </div>
+                            <div class="document-meta">
+                                <div class="extracao-text">Extração automática</div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label class="small font-weight-bold">Classificação</label>
-                            <select id="input-class" class="form-control">
-                                <option value="003.05.01.009">003.05.01.009 | Processo de cálculo de proventos e descontos</option>
-                                <option value="003.05.01.010">003.05.01.010 | Folha de Pagamento - Mensal</option>
-                            </select>
+
+                        <div class="summary-card">
+                            <h6 class="mb-2">Revise os dados extraídos</h6>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Identificador SOS</span>
+                                <span class="info-value" id="rev-view-identificador">DC000000000001SOS</span>
+                                <span class="confidence-badge confidence-high info-confidence">98%</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Classificação</span>
+                                <span class="info-value" id="rev-view-classificacao">003.05.01.009 | Processo de cálculo de proventos e descontos</span>
+                                <span class="confidence-badge confidence-high info-confidence">96%</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Descrição</span>
+                                <span class="info-value" id="rev-view-descricao">Memória de cálculo de proventos (horas extras, adicional noturno) e descontos legais (INSS, IRRF) referente ao mês 03/2026.</span>
+                                <span class="confidence-badge confidence-high info-confidence">94%</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Data do Documento</span>
+                                <span class="info-value" id="rev-view-dataDocumento">2026-03-25</span>
+                                <span class="confidence-badge confidence-high info-confidence">99%</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Tipo Documental</span>
+                                <span class="info-value" id="rev-view-tipoDocumento">Memória de Cálculo</span>
+                                <span class="confidence-badge confidence-medium info-confidence">87%</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Órgão Emissor</span>
+                                <span class="info-value" id="rev-view-orgaoEmissor">Secretaria de Administração - GDF</span>
+                                <span class="confidence-badge confidence-high info-confidence">92%</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Situação</span>
+                                <span class="info-value" id="rev-view-situacao">Vigente</span>
+                                <span class="confidence-badge confidence-low info-confidence">78%</span>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label class="small font-weight-bold">Descrição</label>
-                            <textarea id="input-desc" rows="6" class="form-control" style="resize: none;">Memória de cálculo de proventos (horas extras, adicional noturno) e descontos legais (INSS, IRRF) referente ao mês 03/2026.</textarea>
-                        </div>
-                        <div class="text-right mt-4">
-                            <input type="submit" value="Validar Indexação" class="btn btn-success" id="btnValidar">
+
+                        <div class="form-footer">
+                            <button class="btn-back" id="btnVoltarEditar">Voltar e editar</button>
+                            <button class="btn-save" id="btnConfirmarSalvar">Confirmar e salvar</button>
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
 
         <div class="col-md-7 pb-4">
@@ -271,6 +489,7 @@
         </div>
     </div>
 
+    <!-- TABELA DE DOCUMENTOS INDEXADOS -->
     <div class="col-md-12 px-0">
         <div class="card shadow-sm">
             <div class="card-body p-0">
@@ -294,71 +513,127 @@
 </div>
 
 <script>
+    // ========== VARIÁVEIS ==========
     let seq = 1;
-    let validados = 31;
-    let restantes = 12;
-    const totalFila = 142;
-    let contadorValidacoes = 0; // Contador para controlar as 10 validações
-
-    function fecharModal() {
-        document.getElementById('modalConclusao').style.display = 'none';
+    let contadorValidacoes = 0;
+    let documentoAtual = null;
+    
+    // ========== FUNÇÕES ==========
+    function carregarDadosNaRevisao(dados) {
+        document.getElementById('rev-view-identificador').innerText = dados.identificador;
+        document.getElementById('rev-view-classificacao').innerText = dados.classificacao;
+        document.getElementById('rev-view-descricao').innerText = dados.descricao;
+        document.getElementById('rev-view-dataDocumento').innerText = dados.dataDocumento || '2026-03-25';
+        document.getElementById('rev-view-tipoDocumento').innerText = dados.tipoDocumento || 'Memória de Cálculo';
+        document.getElementById('rev-view-orgaoEmissor').innerText = dados.orgaoEmissor || 'Secretaria de Administração - GDF';
+        document.getElementById('rev-view-situacao').innerText = dados.situacao || 'Vigente';
+        documentoAtual = dados;
     }
-
+    
+    // ========== FORMULÁRIO - VALIDAR ==========
     document.getElementById('form-validacao').addEventListener('submit', function(e) {
         e.preventDefault();
-
-        if (restantes <= 0) {
-            return;
+        
+        const dados = {
+            identificador: document.getElementById('input-sos').value,
+            classificacao: document.getElementById('input-class').options[document.getElementById('input-class').selectedIndex].text,
+            descricao: document.getElementById('input-desc').value,
+            dataDocumento: '2026-03-25',
+            tipoDocumento: 'Memória de Cálculo',
+            orgaoEmissor: 'Secretaria de Administração - GDF',
+            situacao: 'Vigente'
+        };
+        
+        carregarDadosNaRevisao(dados);
+        
+        // Substitui o formulário pela revisão
+        document.getElementById('formContainer').classList.add('hidden');
+        document.getElementById('revisaoContainer').classList.remove('hidden');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    
+    // ========== VOLTAR E EDITAR ==========
+    document.getElementById('btnVoltarEditar').addEventListener('click', function() {
+        if (documentoAtual) {
+            document.getElementById('input-sos').value = documentoAtual.identificador;
+            const classSelect = document.getElementById('input-class');
+            for(let i = 0; i < classSelect.options.length; i++) {
+                if(classSelect.options[i].text === documentoAtual.classificacao) {
+                    classSelect.selectedIndex = i;
+                    break;
+                }
+            }
+            document.getElementById('input-desc').value = documentoAtual.descricao;
         }
-
-        const sos = document.getElementById('input-sos').value;
-        const desc = document.getElementById('input-desc').value;
+        
+        // Volta a mostrar o formulário
+        document.getElementById('revisaoContainer').classList.add('hidden');
+        document.getElementById('formContainer').classList.remove('hidden');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    
+    // ========== CONFIRMAR E SALVAR ==========
+    document.getElementById('btnConfirmarSalvar').addEventListener('click', function() {
         const usuario = document.getElementById('user-email').innerText;
-
+        const identificador = document.getElementById('rev-view-identificador').innerText;
+        const descricao = document.getElementById('rev-view-descricao').innerText;
+        
         const linha = document.createElement('tr');
         linha.innerHTML = `
             <td class="text-center text-success"><i class="fas fa-check-circle"></i></td>
-            <td class="td-sos font-weight-bold">${sos}</td>
-            <td class="td-desc small">${desc}</td>
+            <td class="td-sos font-weight-bold">${identificador}</td>
+            <td class="td-desc small">${descricao}</td>
             <td class="small">${usuario}</td>
             <td class="text-center">
-                <button class="btn-edit" data-tooltip="Editar" onclick="editar(this)" title="">
+                <button class="btn-edit" data-tooltip="Editar" onclick="editarDocumento(this)">
                     <i class="fas fa-edit"></i>
                 </button>
             </td>
         `;
+        
         document.getElementById('tabela-corpo').prepend(linha);
-
-        seq++; validados++; restantes = Math.max(0, restantes - 1);
         contadorValidacoes++;
         
-        atualizarInterface(true);
+        // Gera novo ID para o próximo documento
+        seq++;
+        const novoSos = "DC" + String(seq).padStart(12, '0') + "SOS";
+        document.getElementById('input-sos').value = novoSos;
+        document.getElementById('input-desc').value = "Processo de cálculo de encargos e descontos sindicais - Lote " + seq;
         
-        // Verifica se já validou 10 documentos
+        // Volta a mostrar o formulário
+        document.getElementById('revisaoContainer').classList.add('hidden');
+        document.getElementById('formContainer').classList.remove('hidden');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Verifica se atingiu 10 validações
         if (contadorValidacoes === 10) {
             document.getElementById('btnValidar').disabled = true;
             document.getElementById('modalConclusao').style.display = 'flex';
-            
-            // Desabilita o formulário visualmente
             document.getElementById('input-sos').disabled = true;
             document.getElementById('input-class').disabled = true;
             document.getElementById('input-desc').disabled = true;
         }
     });
-
-    function editar(btn) {
+    
+    // ========== EDITAR DOCUMENTO NA TABELA ==========
+    function editarDocumento(btn) {
         const row = btn.closest('tr');
-        // Devolve os dados para o formulário para edição
-        document.getElementById('input-sos').value = row.querySelector('.td-sos').innerText;
-        document.getElementById('input-desc').value = row.querySelector('.td-desc').innerText;
+        const identificador = row.querySelector('.td-sos').innerText;
+        const descricao = row.querySelector('.td-desc').innerText;
+        
+        // Primeiro, garantir que estamos no formulário
+        document.getElementById('revisaoContainer').classList.add('hidden');
+        document.getElementById('formContainer').classList.remove('hidden');
+        
+        document.getElementById('input-sos').value = identificador;
+        document.getElementById('input-desc').value = descricao;
         
         row.remove();
-        validados--; restantes++; seq--;
-        contadorValidacoes--; // Decrementa o contador ao editar/remover
+        contadorValidacoes--;
         
-        atualizarInterface(false);
-        
-        // Reabilita o formulário se estava desabilitado
         if (document.getElementById('btnValidar').disabled) {
             document.getElementById('btnValidar').disabled = false;
             document.getElementById('input-sos').disabled = false;
@@ -368,16 +643,12 @@
         
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    function atualizarInterface(isNovo) {
-        if(isNovo) {
-            const novoSos = "DC" + String(seq).padStart(12, '0') + "SOS";
-            document.getElementById('input-sos').value = novoSos;
-            document.getElementById('input-desc').value = "Processo de cálculo de encargos e descontos sindicais - Lote " + seq;
-        }
+    
+    // ========== FECHAR MODAL ==========
+    function fecharModal() {
+        document.getElementById('modalConclusao').style.display = 'none';
     }
-
-    // Fecha o modal se clicar fora dele
+    
     window.onclick = function(event) {
         const modal = document.getElementById('modalConclusao');
         if (event.target === modal) {
