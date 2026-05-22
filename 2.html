@@ -199,17 +199,24 @@
             display: inline-block;
         }
         
-        .assertividade-badge {
+        .confidence-badge {
             font-size: 0.7rem;
             font-weight: 600;
             padding: 2px 8px;
             border-radius: 12px;
             background-color: #f8f9fa;
+            text-align: center;
+            line-height: 1.3;
+            white-space: normal;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
         }
-        .assertividade-high { color: #28a745; background-color: #d4edda; }
-        .assertividade-medium { color: #ffc107; background-color: #fff3cd; }
-        .assertividade-low { color: #dc3545; background-color: #f8d7da; }
-        .assertividade-na { color: #6c757d; background-color: #e9ecef; }
+        .confidence-high { color: #28a745; background-color: #d4edda; }
+        .confidence-medium { color: #ffc107; background-color: #fff3cd; }
+        .confidence-low { color: #dc3545; background-color: #f8d7da; }
+        .confidence-na { color: #6c757d; background-color: #e9ecef; font-style: italic; line-height: 1.2; white-space: normal; }
         
         .info-row {
             display: flex;
@@ -236,10 +243,10 @@
             color: #2c363f;
         }
         
-        .info-assertividade {
+        .info-confidence {
             font-size: 0.7rem;
-            min-width: 65px;
-            text-align: right;
+            min-width: 115px;
+            text-align: center;
         }
         
         .summary-card {
@@ -314,6 +321,12 @@
             margin-top: 4px;
         }
         
+        .form-control-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+        
         /* Container dos formulários */
         .form-container {
             transition: all 0.3s ease;
@@ -323,83 +336,51 @@
             display: none;
         }
         
-        /* Campos editáveis na revisão */
-        .edit-mode {
-            display: none;
-            flex: 1;
-            margin-left: 15px;
+        /* Valor fixo (sem edição) */
+        .info-value.fixed {
+            cursor: default;
         }
-        
-        .edit-mode.active {
-            display: block;
-        }
-        
-        .view-mode {
-            display: block;
-            flex: 1;
-            margin-left: 15px;
-        }
-        
-        .view-mode.hidden {
-            display: none;
-        }
-        
-        .inline-actions {
-            display: flex;
+
+        /* ========== BREADCRUMB ESTILO ========== */
+        .breadcrumb-step {
+            background-color: #f8f9fc;
+            padding: 8px 20px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
-            margin-left: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
-        
-        .btn-edit-inline, .btn-confirm-inline {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            padding: 4px;
-            color: #6c757d;
+        .step-item {
+            display: flex;
+            align-items: center;
+            color: #6c86a3;
             transition: all 0.2s;
         }
-        
-        .btn-edit-inline:hover {
-            color: #007bff;
-        }
-        
-        .btn-confirm-inline {
+        .step-item.active {
             color: #28a745;
+            font-weight: 700;
         }
-        
-        .btn-confirm-inline:hover {
-            color: #218838;
+        .step-item.completed {
+            color: #2c7a4d;
         }
-        
-        .btn-confirm-inline.hidden {
-            display: none;
+        .step-icon {
+            margin-right: 6px;
+            font-size: 0.8rem;
         }
-        
-        .btn-edit-inline.hidden {
-            display: none;
+        .step-separator {
+            margin: 0 6px;
+            color: #cbd5e0;
+            font-size: 0.7rem;
         }
-        
-        .form-control-sm {
-            padding: 4px 8px;
-            font-size: 12px;
-            border-radius: 4px;
-        }
-        
-        .bg-warning-light {
-            background-color: #fff3cd;
-            transition: background-color 0.3s;
-        }
-        
-        /* Indicador de amostragem */
-        .amostragem-info {
-            font-size: 0.65rem;
-            color: #6c757d;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px dashed #dee2e6;
-            text-align: center;
+        .breadcrumb-wrapper {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 12px;
         }
     </style>
 </head>
@@ -445,9 +426,29 @@
         </div>
     </div>
 
+    <!-- BREADCRUMB: 1. Preencher > 2. Revisar > 3. Salvo -->
+    <div class="breadcrumb-wrapper">
+        <div class="breadcrumb-step" id="stepBreadcrumb">
+            <div class="step-item" id="stepPreencher">
+                <i class="fas fa-pen-alt step-icon"></i>
+                <span>1. Preencher</span>
+            </div>
+            <span class="step-separator"><i class="fas fa-chevron-right"></i></span>
+            <div class="step-item" id="stepRevisar">
+                <i class="fas fa-search step-icon"></i>
+                <span>2. Revisar</span>
+            </div>
+            <span class="step-separator"><i class="fas fa-chevron-right"></i></span>
+            <div class="step-item" id="stepSalvo">
+                <i class="fas fa-save step-icon"></i>
+                <span>3. Salvo</span>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-5 pb-4">
-            <!-- FORMULÁRIO DE VALIDAÇÃO (DADOS EXTRAÍDOS PELA IA) -->
+            <!-- FORMULÁRIO DE VALIDAÇÃO -->
             <div id="formContainer" class="form-container">
                 <form id="form-validacao">
                     <div class="card shadow-sm equal-height">
@@ -476,7 +477,7 @@
                 </form>
             </div>
 
-            <!-- ÁREA DE REVISÃO (com edição inline e assertividade do DocZ) -->
+            <!-- ÁREA DE REVISÃO (substitui o formulário) -->
             <div id="revisaoContainer" class="form-container hidden">
                 <div class="card shadow-sm equal-height">
                     <div class="card-header font-weight-bold">Revisão de Metadados</div>
@@ -494,153 +495,52 @@
                         <div class="summary-card">
                             <h6 class="mb-2">Revise os dados extraídos</h6>
                             
-                            <!-- Campo Identificador -->
-                            <div class="info-row" data-field="rev-identificador">
+                            <div class="info-row">
                                 <span class="info-label">Identificador SOS</span>
-                                <span class="view-mode" id="rev-view-identificador">DC000000000001SOS</span>
-                                <div class="edit-mode" id="rev-edit-identificador-wrapper">
-                                    <input type="text" id="rev-edit-identificador" class="form-control form-control-sm">
-                                </div>
-                                <span class="assertividade-badge assertividade-na info-assertividade" id="assert-identificador">SEM AMOSTRA</span>
-                                <div class="inline-actions">
-                                    <button class="btn-edit-inline" data-field="rev-identificador" onclick="startEdit('rev-identificador')">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                    <button class="btn-confirm-inline hidden" data-field="rev-identificador" onclick="confirmEdit('rev-identificador')">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </div>
+                                <span class="info-value" id="rev-view-identificador">DC000000000001SOS</span>
+                                <span class="confidence-badge confidence-high info-confidence" id="conf-identificador">98%</span>
                             </div>
                             
-                            <!-- Campo Classificação -->
-                            <div class="info-row" data-field="rev-classificacao">
+                            <div class="info-row">
                                 <span class="info-label">Classificação</span>
-                                <span class="view-mode" id="rev-view-classificacao">003.05.01.009 | Processo de cálculo de proventos e descontos</span>
-                                <div class="edit-mode" id="rev-edit-classificacao-wrapper">
-                                    <select id="rev-edit-classificacao" class="form-control form-control-sm">
-                                        <option value="003.05.01.009">003.05.01.009 | Processo de cálculo de proventos e descontos</option>
-                                        <option value="003.05.01.010">003.05.01.010 | Folha de Pagamento - Mensal</option>
-                                    </select>
-                                </div>
-                                <span class="assertividade-badge assertividade-na info-assertividade" id="assert-classificacao">SEM AMOSTRA</span>
-                                <div class="inline-actions">
-                                    <button class="btn-edit-inline" data-field="rev-classificacao" onclick="startEdit('rev-classificacao')">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                    <button class="btn-confirm-inline hidden" data-field="rev-classificacao" onclick="confirmEdit('rev-classificacao')">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </div>
+                                <span class="info-value" id="rev-view-classificacao">003.05.01.009 | Processo de cálculo de proventos e descontos</span>
+                                <span class="confidence-badge confidence-high info-confidence" id="conf-classificacao">96%</span>
                             </div>
                             
-                            <!-- Campo Descrição -->
-                            <div class="info-row" data-field="rev-descricao">
+                            <div class="info-row">
                                 <span class="info-label">Descrição</span>
-                                <span class="view-mode" id="rev-view-descricao">Memória de cálculo de proventos (horas extras, adicional noturno) e descontos legais (INSS, IRRF) referente ao mês 03/2026.</span>
-                                <div class="edit-mode" id="rev-edit-descricao-wrapper">
-                                    <textarea id="rev-edit-descricao" rows="3" class="form-control form-control-sm"></textarea>
-                                </div>
-                                <span class="assertividade-badge assertividade-na info-assertividade" id="assert-descricao">SEM AMOSTRA</span>
-                                <div class="inline-actions">
-                                    <button class="btn-edit-inline" data-field="rev-descricao" onclick="startEdit('rev-descricao')">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                    <button class="btn-confirm-inline hidden" data-field="rev-descricao" onclick="confirmEdit('rev-descricao')">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </div>
+                                <span class="info-value" id="rev-view-descricao">Memória de cálculo de proventos (horas extras, adicional noturno) e descontos legais (INSS, IRRF) referente ao mês 03/2026.</span>
+                                <span class="confidence-badge confidence-high info-confidence" id="conf-descricao">94%</span>
                             </div>
                             
-                            <!-- Campo Data do Documento -->
-                            <div class="info-row" data-field="rev-dataDocumento">
+                            <div class="info-row">
                                 <span class="info-label">Data do Documento</span>
-                                <span class="view-mode" id="rev-view-dataDocumento">2026-03-25</span>
-                                <div class="edit-mode" id="rev-edit-dataDocumento-wrapper">
-                                    <input type="date" id="rev-edit-dataDocumento" class="form-control form-control-sm">
-                                </div>
-                                <span class="assertividade-badge assertividade-na info-assertividade" id="assert-dataDocumento">SEM AMOSTRA</span>
-                                <div class="inline-actions">
-                                    <button class="btn-edit-inline" data-field="rev-dataDocumento" onclick="startEdit('rev-dataDocumento')">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                    <button class="btn-confirm-inline hidden" data-field="rev-dataDocumento" onclick="confirmEdit('rev-dataDocumento')">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </div>
+                                <span class="info-value" id="rev-view-dataDocumento">2026-03-25</span>
+                                <span class="confidence-badge confidence-high info-confidence" id="conf-dataDocumento">99%</span>
                             </div>
                             
-                            <!-- Campo Tipo Documental -->
-                            <div class="info-row" data-field="rev-tipoDocumento">
+                            <div class="info-row">
                                 <span class="info-label">Tipo Documental</span>
-                                <span class="view-mode" id="rev-view-tipoDocumento">Memória de Cálculo</span>
-                                <div class="edit-mode" id="rev-edit-tipoDocumento-wrapper">
-                                    <select id="rev-edit-tipoDocumento" class="form-control form-control-sm">
-                                        <option value="Memória de Cálculo" selected>Memória de Cálculo</option>
-                                        <option value="Folha de Pagamento">Folha de Pagamento</option>
-                                        <option value="Declaração">Declaração</option>
-                                        <option value="Relatório">Relatório</option>
-                                    </select>
-                                </div>
-                                <span class="assertividade-badge assertividade-na info-assertividade" id="assert-tipoDocumento">SEM AMOSTRA</span>
-                                <div class="inline-actions">
-                                    <button class="btn-edit-inline" data-field="rev-tipoDocumento" onclick="startEdit('rev-tipoDocumento')">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                    <button class="btn-confirm-inline hidden" data-field="rev-tipoDocumento" onclick="confirmEdit('rev-tipoDocumento')">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </div>
+                                <span class="info-value" id="rev-view-tipoDocumento">Memória de Cálculo</span>
+                                <span class="confidence-badge confidence-medium info-confidence" id="conf-tipoDocumento">87%</span>
                             </div>
                             
-                            <!-- Campo Órgão Emissor -->
-                            <div class="info-row" data-field="rev-orgaoEmissor">
+                            <div class="info-row">
                                 <span class="info-label">Órgão Emissor</span>
-                                <span class="view-mode" id="rev-view-orgaoEmissor">Secretaria de Administração - GDF</span>
-                                <div class="edit-mode" id="rev-edit-orgaoEmissor-wrapper">
-                                    <input type="text" id="rev-edit-orgaoEmissor" class="form-control form-control-sm">
-                                </div>
-                                <span class="assertividade-badge assertividade-na info-assertividade" id="assert-orgaoEmissor">SEM AMOSTRA</span>
-                                <div class="inline-actions">
-                                    <button class="btn-edit-inline" data-field="rev-orgaoEmissor" onclick="startEdit('rev-orgaoEmissor')">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                    <button class="btn-confirm-inline hidden" data-field="rev-orgaoEmissor" onclick="confirmEdit('rev-orgaoEmissor')">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </div>
+                                <span class="info-value" id="rev-view-orgaoEmissor">Secretaria de Administração - GDF</span>
+                                <span class="confidence-badge confidence-high info-confidence" id="conf-orgaoEmissor">92%</span>
                             </div>
                             
-                            <!-- Campo Situação -->
-                            <div class="info-row" data-field="rev-situacao">
+                            <div class="info-row">
                                 <span class="info-label">Situação</span>
-                                <span class="view-mode" id="rev-view-situacao">Vigente</span>
-                                <div class="edit-mode" id="rev-edit-situacao-wrapper">
-                                    <select id="rev-edit-situacao" class="form-control form-control-sm">
-                                        <option value="Vigente" selected>Vigente</option>
-                                        <option value="Cancelado">Cancelado</option>
-                                        <option value="Arquivado">Arquivado</option>
-                                    </select>
-                                </div>
-                                <span class="assertividade-badge assertividade-na info-assertividade" id="assert-situacao">SEM AMOSTRA</span>
-                                <div class="inline-actions">
-                                    <button class="btn-edit-inline" data-field="rev-situacao" onclick="startEdit('rev-situacao')">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                    <button class="btn-confirm-inline hidden" data-field="rev-situacao" onclick="confirmEdit('rev-situacao')">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </div>
+                                <span class="info-value" id="rev-view-situacao">Vigente</span>
+                                <span class="confidence-badge confidence-low info-confidence" id="conf-situacao">78%</span>
                             </div>
-                        </div>
-
-                        <!-- Indicador de Amostragem -->
-                        <div class="amostragem-info" id="amostragemInfo">
-                            <i class="fas fa-chart-line"></i> DocZ: Ainda sem amostra suficiente para calcular assertividade (mínimo 5 documentos)
                         </div>
 
                         <div class="form-footer">
-                            <button class="btn-back" id="btnVoltarEditar">Voltar e Editar</button>
-                            <button class="btn-save" id="btnConfirmarSalvar">Confirmar e Salvar</button>
+                            <button class="btn-back" id="btnVoltarEditar">Voltar e editar</button>
+                            <button class="btn-save" id="btnConfirmarSalvar">Confirmar e salvar</button>
                         </div>
                     </div>
                 </div>
@@ -683,122 +583,74 @@
 </div>
 
 <script>
-    // ========== CENÁRIOS DE ASSERTIVIDADE DO DOCZ ==========
-    // Cenário 1: SEM AMOSTRA SUFICIENTE (menos de 5 documentos)
-    // Cenário 2: COM AMOSTRA (percentuais reais)
-    
-    let totalDocumentosIndexados = 0;
-    let usarAmostraReal = false; // Começa falso (SEM AMOSTRA)
-    
-    // Percentuais de assertividade por campo (quando tem amostra)
-    const assertividadeCampos = {
-        identificador: { valor: "98%", classe: "assertividade-high" },
-        classificacao: { valor: "96%", classe: "assertividade-high" },
-        descricao: { valor: "94%", classe: "assertividade-high" },
-        dataDocumento: { valor: "99%", classe: "assertividade-high" },
-        tipoDocumento: { valor: "87%", classe: "assertividade-medium" },
-        orgaoEmissor: { valor: "92%", classe: "assertividade-high" },
-        situacao: { valor: "78%", classe: "assertividade-low" }
-    };
-    
-    function atualizarAssertividade() {
-        const campos = ['identificador', 'classificacao', 'descricao', 'dataDocumento', 'tipoDocumento', 'orgaoEmissor', 'situacao'];
-        const amostragemInfo = document.getElementById('amostragemInfo');
-        
-        if (totalDocumentosIndexados < 5) {
-            // CENÁRIO 1: SEM AMOSTRA SUFICIENTE
-            usarAmostraReal = false;
-            campos.forEach(campo => {
-                const el = document.getElementById(`assert-${campo}`);
-                if (el) {
-                    el.innerText = "SEM AMOSTRA";
-                    el.className = "assertividade-badge assertividade-na info-assertividade";
-                }
-            });
-            if (amostragemInfo) {
-                amostragemInfo.innerHTML = `<i class="fas fa-chart-line"></i> DocZ: Ainda sem amostra suficiente para calcular assertividade (mínimo 5 documentos) - Atualmente: ${totalDocumentosIndexados}/5`;
-            }
-        } else {
-            // CENÁRIO 2: COM AMOSTRA SUFICIENTE
-            usarAmostraReal = true;
-            campos.forEach(campo => {
-                const el = document.getElementById(`assert-${campo}`);
-                if (el && assertividadeCampos[campo]) {
-                    el.innerText = assertividadeCampos[campo].valor;
-                    el.className = `assertividade-badge ${assertividadeCampos[campo].classe} info-assertividade`;
-                }
-            });
-            if (amostragemInfo) {
-                amostragemInfo.innerHTML = `<i class="fas fa-chart-line"></i> DocZ: Assertividade baseada em ${totalDocumentosIndexados} documentos indexados (média geral: 92.1%)`;
-            }
-        }
-    }
-    
     // ========== VARIÁVEIS ==========
     let seq = 1;
     let contadorValidacoes = 0;
     let documentoAtual = null;
-    let camposEditados = new Set();
+    let isEditingMode = false;      // Flag para modo de edição
+    let editingRowRef = null;       // Referência da linha que está sendo editada
     
-    const revisaoFields = ['rev-identificador', 'rev-classificacao', 'rev-descricao', 'rev-dataDocumento', 'rev-tipoDocumento', 'rev-orgaoEmissor', 'rev-situacao'];
-    
-    // ========== FUNÇÕES DA REVISÃO (EDIÇÃO INLINE) ==========
-    function startEdit(field) {
-        const fieldName = field.replace('rev-', '');
-        const viewMode = document.querySelector(`#rev-view-${fieldName}`);
-        const editMode = document.querySelector(`#rev-edit-${fieldName}-wrapper`);
-        const btnEdit = document.querySelector(`.btn-edit-inline[data-field="${field}"]`);
-        const btnConfirm = document.querySelector(`.btn-confirm-inline[data-field="${field}"]`);
+    // ========== FUNÇÃO BREADCRUMB ==========
+    function atualizarBreadcrumb(etapa) {
+        const stepPreencher = document.getElementById('stepPreencher');
+        const stepRevisar = document.getElementById('stepRevisar');
+        const stepSalvo = document.getElementById('stepSalvo');
         
-        if (viewMode && editMode) {
-            viewMode.classList.add('hidden');
-            editMode.classList.add('active');
-            btnEdit.classList.add('hidden');
-            btnConfirm.classList.remove('hidden');
+        stepPreencher.classList.remove('active', 'completed');
+        stepRevisar.classList.remove('active', 'completed');
+        stepSalvo.classList.remove('active', 'completed');
+        
+        if (etapa === 'preencher') {
+            stepPreencher.classList.add('active');
+        } else if (etapa === 'revisar') {
+            stepPreencher.classList.add('completed');
+            stepRevisar.classList.add('active');
+        } else if (etapa === 'salvo') {
+            stepPreencher.classList.add('completed');
+            stepRevisar.classList.add('completed');
+            stepSalvo.classList.add('active');
         }
     }
     
-    function confirmEdit(field) {
-        const fieldName = field.replace('rev-', '');
-        const viewMode = document.querySelector(`#rev-view-${fieldName}`);
-        const editMode = document.querySelector(`#rev-edit-${fieldName}-wrapper`);
-        const btnEdit = document.querySelector(`.btn-edit-inline[data-field="${field}"]`);
-        const btnConfirm = document.querySelector(`.btn-confirm-inline[data-field="${field}"]`);
-        let editElement = document.querySelector(`#rev-edit-${fieldName}`);
-        let newValue = '';
-        let oldValue = viewMode.innerText;
+    // ========== ATUALIZAR PERCENTUAIS NA TELA DE REVISÃO ==========
+    function atualizarPercentuaisNaRevisao() {
+        const totalDocs = contadorValidacoes;
+        const amostraSuficiente = totalDocs >= 5;
         
-        if (editElement) {
-            if (editElement.tagName === 'SELECT') {
-                newValue = editElement.options[editElement.selectedIndex].text;
+        let confIdentificador = amostraSuficiente ? Math.min(98, 85 + Math.floor(totalDocs / 2)) : null;
+        let confClassificacao = amostraSuficiente ? Math.min(96, 82 + Math.floor(totalDocs / 2)) : null;
+        let confDescricao = amostraSuficiente ? Math.min(94, 80 + Math.floor(totalDocs / 2)) : null;
+        let confDataDocumento = amostraSuficiente ? Math.min(99, 88 + Math.floor(totalDocs / 3)) : null;
+        let confTipoDocumento = amostraSuficiente ? Math.min(87, 70 + Math.floor(totalDocs / 2.5)) : null;
+        let confOrgaoEmissor = amostraSuficiente ? Math.min(92, 78 + Math.floor(totalDocs / 2)) : null;
+        let confSituacao = amostraSuficiente ? Math.min(78, 65 + Math.floor(totalDocs / 3)) : null;
+        
+        const campos = [
+            { id: 'conf-identificador', valor: confIdentificador },
+            { id: 'conf-classificacao', valor: confClassificacao },
+            { id: 'conf-descricao', valor: confDescricao },
+            { id: 'conf-dataDocumento', valor: confDataDocumento },
+            { id: 'conf-tipoDocumento', valor: confTipoDocumento },
+            { id: 'conf-orgaoEmissor', valor: confOrgaoEmissor },
+            { id: 'conf-situacao', valor: confSituacao }
+        ];
+        
+        campos.forEach(campo => {
+            const elemento = document.getElementById(campo.id);
+            if (!amostraSuficiente) {
+                elemento.innerHTML = 'SEM AMOSTRA<br>SUFICIENTE';
+                elemento.className = 'confidence-badge confidence-na info-confidence';
             } else {
-                newValue = editElement.value;
+                elemento.innerText = campo.valor + '%';
+                elemento.className = 'confidence-badge info-confidence';
+                if (campo.valor >= 85) elemento.classList.add('confidence-high');
+                else if (campo.valor >= 70) elemento.classList.add('confidence-medium');
+                else elemento.classList.add('confidence-low');
             }
-            viewMode.innerText = newValue;
-        }
-        
-        if (oldValue !== newValue) {
-            camposEditados.add(field);
-            const row = document.querySelector(`.info-row[data-field="${field}"]`);
-            if (row) row.classList.add('bg-warning-light');
-        } else {
-            camposEditados.delete(field);
-            const row = document.querySelector(`.info-row[data-field="${field}"]`);
-            if (row) row.classList.remove('bg-warning-light');
-        }
-        
-        viewMode.classList.remove('hidden');
-        editMode.classList.remove('active');
-        btnEdit.classList.remove('hidden');
-        btnConfirm.classList.add('hidden');
-        
-        if (documentoAtual) {
-            documentoAtual.identificador = document.getElementById('rev-view-identificador').innerText;
-            documentoAtual.classificacao = document.getElementById('rev-view-classificacao').innerText;
-            documentoAtual.descricao = document.getElementById('rev-view-descricao').innerText;
-        }
+        });
     }
     
+    // ========== FUNÇÕES ==========
     function carregarDadosNaRevisao(dados) {
         document.getElementById('rev-view-identificador').innerText = dados.identificador;
         document.getElementById('rev-view-classificacao').innerText = dados.classificacao;
@@ -807,45 +659,9 @@
         document.getElementById('rev-view-tipoDocumento').innerText = dados.tipoDocumento || 'Memória de Cálculo';
         document.getElementById('rev-view-orgaoEmissor').innerText = dados.orgaoEmissor || 'Secretaria de Administração - GDF';
         document.getElementById('rev-view-situacao').innerText = dados.situacao || 'Vigente';
-        
-        document.getElementById('rev-edit-identificador').value = dados.identificador;
-        document.getElementById('rev-edit-descricao').value = dados.descricao;
-        document.getElementById('rev-edit-dataDocumento').value = dados.dataDocumento || '2026-03-25';
-        document.getElementById('rev-edit-orgaoEmissor').value = dados.orgaoEmissor || 'Secretaria de Administração - GDF';
-        
-        const classSelect = document.getElementById('rev-edit-classificacao');
-        for(let i = 0; i < classSelect.options.length; i++) {
-            if(classSelect.options[i].text === dados.classificacao) {
-                classSelect.selectedIndex = i;
-                break;
-            }
-        }
-        
-        const tipoSelect = document.getElementById('rev-edit-tipoDocumento');
-        for(let i = 0; i < tipoSelect.options.length; i++) {
-            if(tipoSelect.options[i].text === (dados.tipoDocumento || 'Memória de Cálculo')) {
-                tipoSelect.selectedIndex = i;
-                break;
-            }
-        }
-        
-        const situacaoSelect = document.getElementById('rev-edit-situacao');
-        for(let i = 0; i < situacaoSelect.options.length; i++) {
-            if(situacaoSelect.options[i].text === (dados.situacao || 'Vigente')) {
-                situacaoSelect.selectedIndex = i;
-                break;
-            }
-        }
-        
         documentoAtual = dados;
-    }
-    
-    function limparCamposEditados() {
-        camposEditados.clear();
-        revisaoFields.forEach(field => {
-            const row = document.querySelector(`.info-row[data-field="${field}"]`);
-            if (row) row.classList.remove('bg-warning-light');
-        });
+        
+        atualizarPercentuaisNaRevisao();
     }
     
     // ========== FORMULÁRIO - VALIDAR ==========
@@ -864,9 +680,15 @@
         
         carregarDadosNaRevisao(dados);
         
-        // Substitui o formulário pela revisão
         document.getElementById('formContainer').classList.add('hidden');
         document.getElementById('revisaoContainer').classList.remove('hidden');
+        
+        // Se for modo edição, breadcrumb fica em "Salvo", senão "Revisar"
+        if (isEditingMode) {
+            atualizarBreadcrumb('salvo');
+        } else {
+            atualizarBreadcrumb('revisar');
+        }
         
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
@@ -885,11 +707,16 @@
             document.getElementById('input-desc').value = documentoAtual.descricao;
         }
         
-        // Volta a mostrar o formulário
         document.getElementById('revisaoContainer').classList.add('hidden');
         document.getElementById('formContainer').classList.remove('hidden');
         
-        limparCamposEditados();
+        // Se estava em modo edição, mantém o breadcrumb em "Salvo" (porque ainda está editando um documento salvo)
+        if (isEditingMode) {
+            atualizarBreadcrumb('salvo');
+        } else {
+            atualizarBreadcrumb('preencher');
+        }
+        
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     
@@ -899,44 +726,58 @@
         const identificador = document.getElementById('rev-view-identificador').innerText;
         const descricao = document.getElementById('rev-view-descricao').innerText;
         
-        // Verifica se houveram edições para contabilizar na assertividade
-        const teveEdicao = camposEditados.size > 0;
+        if (isEditingMode && editingRowRef) {
+            // Atualizar a linha existente
+            editingRowRef.querySelector('.td-sos').innerText = identificador;
+            editingRowRef.querySelector('.td-desc').innerText = descricao;
+            
+            // Limpar flags
+            isEditingMode = false;
+            editingRowRef = null;
+            
+            // Voltar para o formulário, mas mantendo o documento editado nos campos
+            document.getElementById('revisaoContainer').classList.add('hidden');
+            document.getElementById('formContainer').classList.remove('hidden');
+            
+            // Manter breadcrumb em "Salvo" pois estamos editando um item já salvo
+            atualizarBreadcrumb('salvo');
+            
+        } else {
+            // Novo documento normal
+            const linha = document.createElement('tr');
+            linha.innerHTML = `
+                <td class="text-center text-success"><i class="fas fa-check-circle"></i></td>
+                <td class="td-sos font-weight-bold">${identificador}</td>
+                <td class="td-desc small">${descricao}</td>
+                <td class="small">${usuario}</td>
+                <td class="text-center">
+                    <button class="btn-edit" data-tooltip="Editar" onclick="editarDocumento(this)">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            `;
+            
+            document.getElementById('tabela-corpo').prepend(linha);
+            contadorValidacoes++;
+            
+            // Gera novo ID para o próximo documento
+            seq++;
+            const novoSos = "DC" + String(seq).padStart(12, '0') + "SOS";
+            document.getElementById('input-sos').value = novoSos;
+            document.getElementById('input-desc').value = "Processo de cálculo de encargos e descontos sindicais - Lote " + seq;
+            
+            // Volta a mostrar o formulário
+            document.getElementById('revisaoContainer').classList.add('hidden');
+            document.getElementById('formContainer').classList.remove('hidden');
+            
+            // Breadcrumb volta para Preencher (novo documento)
+            atualizarBreadcrumb('preencher');
+        }
         
-        const linha = document.createElement('tr');
-        linha.innerHTML = `
-            <td class="text-center text-success"><i class="fas fa-check-circle"></i></td>
-            <td class="td-sos font-weight-bold">${identificador}</td>
-            <td class="td-desc small">${descricao}</td>
-            <td class="small">${usuario}</td>
-            <td class="text-center">
-                <button class="btn-edit" data-tooltip="Editar" onclick="editarDocumento(this)">
-                    <i class="fas fa-edit"></i>
-                </button>
-            </td>
-        `;
-        
-        document.getElementById('tabela-corpo').prepend(linha);
-        contadorValidacoes++;
-        totalDocumentosIndexados++;
-        
-        // Atualiza a assertividade baseada na quantidade de documentos
-        atualizarAssertividade();
-        
-        // Gera novo ID para o próximo documento
-        seq++;
-        const novoSos = "DC" + String(seq).padStart(12, '0') + "SOS";
-        document.getElementById('input-sos').value = novoSos;
-        document.getElementById('input-desc').value = "Processo de cálculo de encargos e descontos sindicais - Lote " + seq;
-        
-        // Volta a mostrar o formulário
-        document.getElementById('revisaoContainer').classList.add('hidden');
-        document.getElementById('formContainer').classList.remove('hidden');
-        
-        limparCamposEditados();
         window.scrollTo({ top: 0, behavior: 'smooth' });
         
-        // Verifica se atingiu 10 validações (para demo)
-        if (contadorValidacoes === 10) {
+        // Verifica se atingiu 10 validações (apenas novos, não para edição)
+        if (!isEditingMode && contadorValidacoes === 10) {
             document.getElementById('btnValidar').disabled = true;
             document.getElementById('modalConclusao').style.display = 'flex';
             document.getElementById('input-sos').disabled = true;
@@ -951,18 +792,13 @@
         const identificador = row.querySelector('.td-sos').innerText;
         const descricao = row.querySelector('.td-desc').innerText;
         
-        // Primeiro, garantir que estamos no formulário
-        document.getElementById('revisaoContainer').classList.add('hidden');
-        document.getElementById('formContainer').classList.remove('hidden');
-        
+        // Preencher formulário com os dados do documento a ser editado
         document.getElementById('input-sos').value = identificador;
         document.getElementById('input-desc').value = descricao;
         
+        // Remover a linha da tabela (será recriada ao salvar a edição)
         row.remove();
         contadorValidacoes--;
-        totalDocumentosIndexados--;
-        
-        atualizarAssertividade();
         
         if (document.getElementById('btnValidar').disabled) {
             document.getElementById('btnValidar').disabled = false;
@@ -970,6 +806,30 @@
             document.getElementById('input-class').disabled = false;
             document.getElementById('input-desc').disabled = false;
         }
+        
+        // Ativar modo de edição e guardar referência da linha removida
+        isEditingMode = true;
+        editingRowRef = row;
+        
+        // Preparar dados para revisão
+        const dadosEdit = {
+            identificador: identificador,
+            classificacao: document.getElementById('input-class').options[document.getElementById('input-class').selectedIndex].text,
+            descricao: descricao,
+            dataDocumento: '2026-03-25',
+            tipoDocumento: 'Memória de Cálculo',
+            orgaoEmissor: 'Secretaria de Administração - GDF',
+            situacao: 'Vigente'
+        };
+        
+        carregarDadosNaRevisao(dadosEdit);
+        
+        // Ir para tela de revisão
+        document.getElementById('formContainer').classList.add('hidden');
+        document.getElementById('revisaoContainer').classList.remove('hidden');
+        
+        // Breadcrumb atualiza para "Salvo" (editando item já salvo)
+        atualizarBreadcrumb('salvo');
         
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -986,8 +846,8 @@
         }
     }
     
-    // Inicializa a assertividade
-    atualizarAssertividade();
+    atualizarBreadcrumb('preencher');
+    atualizarPercentuaisNaRevisao();
 </script>
 </body>
 </html>
